@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AppWidget {
@@ -9,11 +10,37 @@ class AppWidget {
     );
   }
 
+  static TextStyle LeadingTextStyle() {
+    return const TextStyle(
+      color: Color(0xFF3C2F2F),
+      fontSize: 30,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  static TextStyle TotalPriceTextStyle() {
+    return const TextStyle(
+      color: Colors.black,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   static TextStyle SimpleOnboardingTextStyle() {
     return const TextStyle(
       color: Color(0xFF6A6A6A),
       fontSize: 16,
-      fontFamily: "Poppins",
+      fontFamily: "roboto",
+      overflow: TextOverflow.fade,
+    );
+  }
+
+  static TextStyle PriceTextStyle() {
+    return const TextStyle(
+      color: Color(0xFF6A6A6A),
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
     );
   }
 

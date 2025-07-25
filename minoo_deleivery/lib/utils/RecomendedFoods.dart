@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:minoo_deleivery/pages/details.dart';
 
 class FoodItem {
   final String imageUrl;
@@ -9,6 +10,8 @@ class FoodItem {
   bool isLiked;
   final double rating;
   final List<String> categories;
+  String description;
+  double price;
 
   FoodItem({
     required this.imageUrl,
@@ -17,6 +20,8 @@ class FoodItem {
     required this.isLiked,
     required this.rating,
     required this.categories,
+    required this.description,
+    required this.price,
   });
 }
 
@@ -28,6 +33,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Wendy's Burger",
     categories: ['All', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/pizza1.png',
@@ -36,6 +44,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/vegetable.jpg',
@@ -44,6 +55,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Fresh vegetables",
     categories: ['All', 'Fruits', "vegetable"],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Hamburger Veggie Burger.png',
@@ -52,6 +66,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: " Veggie Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Hotels.jpg',
@@ -60,6 +77,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "5 Star Hotels",
     categories: ['All', "Hotels"],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Hamburger Chicken Burger.png',
@@ -68,6 +88,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Vigetables', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
 
   FoodItem(
@@ -77,6 +100,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
 
   FoodItem(
@@ -86,6 +112,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Best resorts ",
     categories: ['All', 'Resorts'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Fried Chicken Burger.png',
@@ -94,6 +123,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Resturants.jpg',
@@ -102,6 +134,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Best Resturants",
     categories: ['All', 'Resturants', 'Beverages', "Juice"],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/pizza2.png',
@@ -110,6 +145,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Cheeseburger.png',
@@ -118,6 +156,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Wendy's Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/Hamburger Veggie Burger.png',
@@ -126,6 +167,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Veggie Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/burger1.png',
@@ -134,6 +178,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
   FoodItem(
     imageUrl: 'assets/images/burger2.png',
@@ -142,6 +189,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Chicken Burger",
     categories: ['All', 'Fruits', 'Bakeries'],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
 
   FoodItem(
@@ -151,6 +201,9 @@ List<FoodItem> foodList = [
     isLiked: false,
     subTitle: "Fresh and cool",
     categories: ['All', 'Fruits', 'Beverages', "Juice"],
+    price: 10,
+    description:
+        "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
 ];
 
@@ -199,115 +252,132 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                         ),
                       ],
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              // Elliptical blurred shadow
-                              Positioned(
-                                bottom: 0,
-                                child: ImageFiltered(
-                                  imageFilter: ImageFilter.blur(
-                                    sigmaX: 15,
-                                    sigmaY: 5,
-                                  ), // horizontal + vertical blur
-                                  child: Container(
-                                    width: 91,
-                                    height: 11,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromRGBO(0, 0, 0, 0.35),
-                                      borderRadius: BorderRadius.circular(
-                                        30,
-                                      ), // elliptical shape
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => DetailsPage(
+                                  imageUrl: item.imageUrl,
+                                  title: item.title,
+                                  subTitle: item.subTitle,
+                                  description: item.description.toString(),
+                                  price: item.price,
+                                ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                // Elliptical blurred shadow
+                                Positioned(
+                                  bottom: 0,
+                                  child: ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                      sigmaX: 15,
+                                      sigmaY: 5,
+                                    ), // horizontal + vertical blur
+                                    child: Container(
+                                      width: 91,
+                                      height: 11,
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(0, 0, 0, 0.35),
+                                        borderRadius: BorderRadius.circular(
+                                          30,
+                                        ), // elliptical shape
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              // The main image
-                              SizedBox(
-                                width: 110,
-                                height: 111.76,
-                                child: Image.asset(item.imageUrl),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              item.title,
-                              style: const TextStyle(
-                                color: Color(0xFF3C2F2F),
-                                fontFamily: 'roboto',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                                // The main image
+                                SizedBox(
+                                  width: 110,
+                                  height: 111.76,
+                                  child: Image.asset(item.imageUrl),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                item.subTitle,
+                          ),
+
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                item.title,
                                 style: const TextStyle(
                                   color: Color(0xFF3C2F2F),
                                   fontFamily: 'roboto',
                                   fontSize: 16,
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            top: 2.0,
-                            bottom: 2.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.star, color: Color(0xfff59e0b)),
-                                  Text(
-                                    item.rating.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  item.subTitle,
+                                  style: const TextStyle(
+                                    color: Color(0xFF3C2F2F),
+                                    fontFamily: 'roboto',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
                                   ),
-                                ],
-                              ),
-                              IconButton(
-                                icon:
-                                    item.isLiked == false
-                                        ? const Icon(
-                                          Icons.favorite_outline_outlined,
-                                          color: Color(0xFFf59e0b),
-                                        )
-                                        : const Icon(
-                                          Icons.favorite_outlined,
-                                          color: Color(0xFFf59e0b),
-                                        ),
-                                onPressed: () {
-                                  setState(() {
-                                    foodList[index].isLiked =
-                                        !foodList[index].isLiked;
-                                  });
-                                },
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 5),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8.0,
+                              right: 8.0,
+                              top: 2.0,
+                              bottom: 2.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.star, color: Color(0xfff59e0b)),
+                                    Text(
+                                      item.rating.toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                IconButton(
+                                  icon:
+                                      item.isLiked == false
+                                          ? const Icon(
+                                            Icons.favorite_outline_outlined,
+                                            color: Color(0xFFf59e0b),
+                                          )
+                                          : const Icon(
+                                            Icons.favorite_outlined,
+                                            color: Color(0xFFf59e0b),
+                                          ),
+                                  onPressed: () {
+                                    setState(() {
+                                      foodList[index].isLiked =
+                                          !foodList[index].isLiked;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
