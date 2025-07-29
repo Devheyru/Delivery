@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:minoo_deleivery/pages/login.dart';
+import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Login> createState() => _LoginState();
 }
 
-class _SignupState extends State<Signup> {
+class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,26 +69,11 @@ class _SignupState extends State<Signup> {
                         SizedBox(height: 20.0),
                         Center(
                           child: Text(
-                            "SignUp",
+                            "LogIn",
                             style: AppWidget.LeadingTextStyle(),
                           ),
                         ),
-                        SizedBox(height: 10.0),
-                        Text('Name:', style: AppWidget.signUpTextStyle()),
-                        SizedBox(height: 5.0),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFececf8),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Enter name",
-                              prefixIcon: Icon(Icons.person_outline),
-                            ),
-                          ),
-                        ),
+
                         SizedBox(height: 10.0),
                         Text('Email:', style: AppWidget.signUpTextStyle()),
 
@@ -123,7 +108,25 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 30.0),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              isSemanticButton: false,
+                              onPressed: () {},
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
                         Center(
                           child: Container(
                             width: MediaQuery.of(context).size.width / 3,
@@ -134,7 +137,7 @@ class _SignupState extends State<Signup> {
                             ),
                             child: Center(
                               child: Text(
-                                "SignUp",
+                                "LogIn",
                                 style: AppWidget.whiteBoldTextFieldStyle(),
                               ),
                             ),
@@ -145,7 +148,7 @@ class _SignupState extends State<Signup> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Already have an account?',
+                              'Don\'t have an account?',
                               style: AppWidget.SimpleOnboardingTextStyle(),
                             ),
                             TextButton(
@@ -154,12 +157,12 @@ class _SignupState extends State<Signup> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Login(),
+                                    builder: (context) => Signup(),
                                   ),
                                 );
                               },
                               child: Text(
-                                'Login',
+                                'SignUp',
                                 style: TextStyle(
                                   color: Colors.blueAccent,
                                   fontSize: 18,

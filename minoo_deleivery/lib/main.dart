@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minoo_deleivery/pages/home.dart';
+import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xfff53e0b),
       ),
       routes: {'/home': (context) => const Home()},
-      home: const Signup(),
+      home: const Login(),
     );
   }
 }

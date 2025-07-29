@@ -44,6 +44,14 @@ class AppWidget {
     );
   }
 
+  static TextStyle signUpTextStyle() {
+    return const TextStyle(
+      color: Color(0xFF6A6A6A),
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
   static TextStyle PrimaryStyle() {
     return const TextStyle(color: Color(0xfff59e0b), fontSize: 16);
   }
@@ -52,6 +60,14 @@ class AppWidget {
     return const TextStyle(
       color: Color(0xffffffff),
       fontSize: 18,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  static TextStyle whiteBoldTextFieldStyle() {
+    return const TextStyle(
+      color: Color(0xffffffff),
+      fontSize: 24,
       fontWeight: FontWeight.bold,
     );
   }
