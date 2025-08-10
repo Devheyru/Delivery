@@ -10,8 +10,8 @@ class FoodItem {
   bool isLiked;
   final double rating;
   final List<String> categories;
-  String description;
-  double price;
+  final String description;
+  final double price;
 
   FoodItem({
     required this.imageUrl,
@@ -92,7 +92,6 @@ List<FoodItem> foodList = [
     description:
         "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
-
   FoodItem(
     imageUrl: 'assets/images/pizza3.png',
     title: 'Pizza',
@@ -104,7 +103,6 @@ List<FoodItem> foodList = [
     description:
         "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
-
   FoodItem(
     imageUrl: 'assets/images/Resorts.jpg',
     title: 'Resorts',
@@ -193,7 +191,6 @@ List<FoodItem> foodList = [
     description:
         "The Cheeseburger Wendy's Burger is a classic fast food burger that packs a punch of flavor in every bite. Made with a juicy beef patty cooked to perfection, it's topped with melted American cheese, crispy lettuce, ripe tomato, and crunchy pickles. ",
   ),
-
   FoodItem(
     imageUrl: 'assets/images/Beverages.jpg',
     title: 'Juice',
@@ -220,19 +217,16 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
   Widget build(BuildContext context) {
     return Expanded(
       child: GridView.builder(
-        scrollDirection: Axis.vertical,
-        padding: const EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         itemCount: widget.filteredItems.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // two items per row
-
-          childAspectRatio: 0.75, // adjust as needed for card shape
+          childAspectRatio: 0.75, // card shape ratio
         ),
         itemBuilder: (context, index) {
           final item = widget.filteredItems[index];
-
           return Padding(
-            padding: const EdgeInsets.only(left: 9.0),
+            padding: const EdgeInsets.only(left: 9),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -243,31 +237,29 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
-                      boxShadow: [
-                        const BoxShadow(
+                      boxShadow: const [
+                        BoxShadow(
                           color: Color(0xFF6A6A6A),
-                          spreadRadius: 0,
                           blurRadius: 3,
                           offset: Offset(-1, -1),
                         ),
                       ],
                     ),
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => DetailsPage(
-                                  imageUrl: item.imageUrl,
-                                  title: item.title,
-                                  subTitle: item.subTitle,
-                                  description: item.description.toString(),
-                                  price: item.price,
-                                ),
+                      onTap:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => DetailsPage(
+                                    imageUrl: item.imageUrl,
+                                    title: item.title,
+                                    subTitle: item.subTitle,
+                                    description: item.description,
+                                    price: item.price,
+                                  ),
+                            ),
                           ),
-                        );
-                      },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -275,28 +267,28 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                             child: Stack(
                               alignment: Alignment.bottomCenter,
                               children: [
-                                // Elliptical blurred shadow
                                 Positioned(
                                   bottom: 0,
                                   child: ImageFiltered(
                                     imageFilter: ImageFilter.blur(
                                       sigmaX: 15,
                                       sigmaY: 5,
-                                    ), // horizontal + vertical blur
+                                    ),
                                     child: Container(
                                       width: 91,
                                       height: 11,
                                       decoration: BoxDecoration(
-                                        color: Color.fromRGBO(0, 0, 0, 0.35),
-                                        borderRadius: BorderRadius.circular(
-                                          30,
-                                        ), // elliptical shape
+                                        color: const Color.fromRGBO(
+                                          0,
+                                          0,
+                                          0,
+                                          0.35,
+                                        ),
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
                                     ),
                                   ),
                                 ),
-
-                                // The main image
                                 SizedBox(
                                   width: 110,
                                   height: 111.76,
@@ -305,7 +297,6 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                               ],
                             ),
                           ),
-
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -319,7 +310,7 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(left: 8),
                                 child: Text(
                                   item.subTitle,
                                   style: const TextStyle(
@@ -334,18 +325,19 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                           ),
                           const SizedBox(height: 5),
                           Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                              right: 8.0,
-                              top: 2.0,
-                              bottom: 2.0,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.star, color: Color(0xfff59e0b)),
+                                    const Icon(
+                                      Icons.star,
+                                      color: Color(0xfff59e0b),
+                                    ),
                                     Text(
                                       item.rating.toString(),
                                       style: const TextStyle(
@@ -357,13 +349,13 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                                 ),
                                 IconButton(
                                   icon:
-                                      item.isLiked == false
+                                      item.isLiked
                                           ? const Icon(
-                                            Icons.favorite_outline_outlined,
+                                            Icons.favorite_outlined,
                                             color: Color(0xFFf59e0b),
                                           )
                                           : const Icon(
-                                            Icons.favorite_outlined,
+                                            Icons.favorite_outline_outlined,
                                             color: Color(0xFFf59e0b),
                                           ),
                                   onPressed: () {

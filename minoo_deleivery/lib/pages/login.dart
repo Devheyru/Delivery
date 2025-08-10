@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 
@@ -22,7 +23,7 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.only(top: 30),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Color(0xaa6f6f6f),
+                color: const Color(0xaa6f6f6f),
                 // 0xaa6f6f6f
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(50),
@@ -31,6 +32,33 @@ class _LoginState extends State<Login> {
               ),
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => Home()),
+                            (route) => false,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          height: 40,
+
+                          padding: EdgeInsets.all(5),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.asset(
@@ -66,7 +94,7 @@ class _LoginState extends State<Login> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20.0),
+                        const SizedBox(height: 20.0),
                         Center(
                           child: Text(
                             "LogIn",
@@ -74,34 +102,34 @@ class _LoginState extends State<Login> {
                           ),
                         ),
 
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         Text('Email:', style: AppWidget.signUpTextStyle()),
 
-                        SizedBox(height: 5.0),
+                        const SizedBox(height: 5.0),
                         Container(
                           decoration: BoxDecoration(
-                            color: Color(0xFFececf8),
+                            color: const Color(0xFFececf8),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter email",
                               prefixIcon: Icon(Icons.mail_outline),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         Text('Password:', style: AppWidget.signUpTextStyle()),
 
-                        SizedBox(height: 5.0),
+                        const SizedBox(height: 5.0),
                         Container(
                           decoration: BoxDecoration(
-                            color: Color(0xFFececf8),
+                            color: const Color(0xFFececf8),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter password",
                               prefixIcon: Icon(Icons.password_outlined),
@@ -126,13 +154,13 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Center(
                           child: Container(
                             width: MediaQuery.of(context).size.width / 3,
                             height: MediaQuery.of(context).size.height / 18,
                             decoration: BoxDecoration(
-                              color: Color(0xfff59e0b),
+                              color: const Color(0xfff59e0b),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
@@ -143,7 +171,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20.0),
+                        const SizedBox(height: 20.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -163,7 +191,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 'SignUp',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.blueAccent,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

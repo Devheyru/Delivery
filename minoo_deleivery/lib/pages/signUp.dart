@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 
@@ -31,6 +32,33 @@ class _SignupState extends State<Signup> {
               ),
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => Home()),
+                            (route) => false,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          height: 40,
+
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.asset(
@@ -45,7 +73,7 @@ class _SignupState extends State<Signup> {
             ),
             Container(
               margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height / 3.3,
+                top: MediaQuery.of(context).size.height / 3.2,
                 left: 20.0,
                 right: 20.0,
               ),
