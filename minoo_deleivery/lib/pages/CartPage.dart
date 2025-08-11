@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minoo_deleivery/pages/home.dart';
+import 'package:minoo_deleivery/providers/cart_provider.dart';
 
-class Cartpage extends StatefulWidget {
+class Cartpage extends ConsumerStatefulWidget {
   const Cartpage({super.key});
 
   @override
-  State<Cartpage> createState() => _CartpageState();
+  ConsumerState<Cartpage> createState() => _CartpageState();
 }
 
-class _CartpageState extends State<Cartpage> {
+class _CartpageState extends ConsumerState<Cartpage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final int count = 4;
+    final cartItems = ref.watch(cartProvider); // <-- watch cart
 
+    final totalPrice = cartItems.fold<double>(
+      0,
+      (previousValue, element) =>
+          previousValue + element.food.price * element.quantity,
+    );
     return Scaffold(
       body: Stack(
         children: [
           Column(
             children: [
-              // Top Bar
+              // Top Bar (same as before)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
@@ -30,8 +37,8 @@ class _CartpageState extends State<Cartpage> {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (_) => const Home()),
-                          (_) => false,
+                          MaterialPageRoute(builder: (_) => Home()),
+                          (route) => false,
                         );
                       },
                     ),
@@ -52,125 +59,192 @@ class _CartpageState extends State<Cartpage> {
 
               // Cart Items List
               SizedBox(
-                height: size.height / 2.1,
-
-                child: ListView.builder(
-                  itemCount: count, // Replace with cartItems.length
-                  padding: const EdgeInsets.all(16),
-
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border:
-                            count > 1
-                                ? const Border(
-                                  top: BorderSide(color: Colors.lightBlue),
-                                  left: BorderSide(color: Colors.lightBlue),
-                                  right: BorderSide(color: Colors.lightBlue),
-                                )
-                                : const Border(
-                                  top: BorderSide(color: Colors.lightBlue),
-                                  bottom: BorderSide(color: Colors.lightBlue),
-                                  left: BorderSide(color: Colors.lightBlue),
-                                  right: BorderSide(color: Colors.lightBlue),
-                                ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Product Image
-                          Container(
-                            padding: const EdgeInsets.all(5),
-
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Image.asset(
-                              "assets/images/Cheeseburger.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.contain,
-                            ),
+                height: 413,
+                child:
+                    cartItems.isEmpty
+                        ? Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Text(
+                            'Your cart is empty',
+                            style: TextStyle(fontSize: 30),
                           ),
-                          const SizedBox(width: 20),
+                        )
+                        : ListView.builder(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                          ),
+                          itemCount: cartItems.length,
+                          itemBuilder: (context, index) {
+                            final cartItem = cartItems[index];
+                            final food = cartItem.food;
 
-                          // Product Details
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Column(
+                            return Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                border:
+                                    cartItems.length > 1
+                                        ? const Border(
+                                          top: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                          left: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                          right: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                        )
+                                        : const Border(
+                                          top: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                          bottom: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                          left: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                          right: BorderSide(
+                                            color: Colors.lightBlue,
+                                          ),
+                                        ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Product Image
+                                  Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Image.asset(
+                                      food.imageUrl,
+                                      height: 120,
+                                      width: 120,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+
+                                  // Product Details
+                                  Expanded(
+                                    child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Chees Burger",
-                                          style: TextStyle(fontSize: 18),
+                                        Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  food.title,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(food.subTitle),
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            _iconButton(
+                                              icon: Icons.delete,
+                                              color: const Color(0xFFf53e0b),
+                                              onTap: () {
+                                                ref
+                                                    .read(cartProvider.notifier)
+                                                    .removeItem(food);
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                        Text("HumBurger"),
+                                        const SizedBox(height: 50),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${(food.price * cartItem.quantity).toStringAsFixed(0)} birr',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            Row(
+                                              children: [
+                                                _iconButton(
+                                                  icon: Icons.remove,
+                                                  color: const Color(
+                                                    0xFFf59e0b,
+                                                  ),
+                                                  onTap: () {
+                                                    if (cartItem.quantity > 1) {
+                                                      final newQty =
+                                                          cartItem.quantity - 1;
+                                                      ref
+                                                          .read(
+                                                            cartProvider
+                                                                .notifier,
+                                                          )
+                                                          .updateQuantity(
+                                                            food,
+                                                            newQty,
+                                                          );
+                                                    }
+                                                  },
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  '${cartItem.quantity}',
+                                                  style: const TextStyle(
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                _iconButton(
+                                                  icon: Icons.add,
+                                                  color: const Color(
+                                                    0xFFf59e0b,
+                                                  ),
+                                                  onTap: () {
+                                                    if (cartItem.quantity <
+                                                        10) {
+                                                      final newQty =
+                                                          cartItem.quantity + 1;
+                                                      ref
+                                                          .read(
+                                                            cartProvider
+                                                                .notifier,
+                                                          )
+                                                          .updateQuantity(
+                                                            food,
+                                                            newQty,
+                                                          );
+                                                    }
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                    const Spacer(),
-                                    _iconButton(
-                                      icon: Icons.delete,
-                                      color: const Color(0xFFf53e0b),
-                                      onTap: () {},
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 50),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      "65 birr",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 30),
-                                    Row(
-                                      children: [
-                                        _iconButton(
-                                          icon: Icons.add,
-                                          color: const Color(0xFFf59e0b),
-                                          onTap: () => setState(() {}),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Text(
-                                          "1",
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        _iconButton(
-                                          icon: Icons.remove,
-                                          color: const Color(0xFFf59e0b),
-                                          onTap: () {},
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
 
-          // Bottom Summary Section
+          // Bottom Summary Section (update total price)
           Positioned(
             bottom: -25,
             child: Material(
@@ -180,8 +254,8 @@ class _CartpageState extends State<Cartpage> {
               elevation: 5.0,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
+                  horizontal: 20,
+                  vertical: 5,
                 ),
                 width: size.width,
                 height: size.height / 2.65,
@@ -200,7 +274,7 @@ class _CartpageState extends State<Cartpage> {
                         ),
                         TextButton(
                           style: ButtonStyle(
-                            overlayColor: WidgetStateProperty.all(
+                            overlayColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 22, 94, 22),
                             ),
                           ),
@@ -226,65 +300,55 @@ class _CartpageState extends State<Cartpage> {
                         color: const Color.fromARGB(255, 115, 147, 162),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
+                      child: const Text(
                         "1000 Addis Ababa Bole Road",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Row(
                           children: [
-                            const Row(
-                              children: [
-                                Text(
-                                  "Total: ",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                SizedBox(width: 20),
-                                Text(
-                                  "96 ",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 26,
-                                  ),
-                                ),
-                                Text(
-                                  " Birr",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
+                            const Text(
+                              "Total: ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              totalPrice.toStringAsFixed(2),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 26,
+                              ),
+                            ),
+                            const Text(
+                              " Birr",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      width: MediaQuery.of(context).size.width / 1.5,
+                      width: size.width / 1.5,
                       height: 70,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: const Color(0xFFf58e0b),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Place Order",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 32),
                       ),
                     ),
                   ],

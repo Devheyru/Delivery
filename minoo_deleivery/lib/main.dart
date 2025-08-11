@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minoo_deleivery/pages/home.dart';
-import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/onboarding.dart';
-import 'package:minoo_deleivery/pages/signUp.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

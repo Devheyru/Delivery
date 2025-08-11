@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minoo_deleivery/providers/cart_provider.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
+import 'package:minoo_deleivery/utils/RecomendedFoods.dart';
 
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends ConsumerStatefulWidget {
   final String imageUrl, title, description, subTitle;
   final double price;
 
@@ -15,10 +18,10 @@ class DetailsPage extends StatefulWidget {
   });
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  ConsumerState<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _DetailsPageState extends ConsumerState<DetailsPage> {
   int quantity = 1;
   late double totalPrice;
 
@@ -163,18 +166,44 @@ class _DetailsPageState extends State<DetailsPage> {
               child: Material(
                 borderRadius: BorderRadius.circular(15),
                 elevation: 3,
-                child: Container(
-                  height: 60,
-                  width: MediaQuery.of(context).size.width / 2,
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Add to Cart",
-                      style: TextStyle(color: Colors.white, fontSize: 26),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () {
+                    // Create FoodItem to add to cart
+                    final food = FoodItem(
+                      imageUrl: widget.imageUrl,
+                      title: widget.title,
+                      subTitle: widget.subTitle,
+                      isLiked: false, // default or adjust if needed
+                      rating: 0, // you may want to pass rating if available
+                      categories: [], // add categories if available
+                      description: widget.description,
+                      price: widget.price,
+                    );
+
+                    ref.read(cartProvider.notifier).addItem(food, quantity);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${widget.title} x$quantity added to cart',
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width / 2,
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Add to Cart",
+                        style: TextStyle(color: Colors.white, fontSize: 26),
+                      ),
                     ),
                   ),
                 ),
