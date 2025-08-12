@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'foodCatagories.dart';
-// import 'food_model.dart'; // contains FoodItem, foodList
-import 'RecomendedFoods.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FoodScreen extends StatefulWidget {
+import '../providers/menu_provider.dart'; // Your Riverpod provider file
+import 'Recomendedfoods.dart';
+import 'foodCatagories.dart';
+
+class FoodScreen extends ConsumerStatefulWidget {
   final String searchQuery;
   const FoodScreen({super.key, required this.searchQuery});
 
   @override
-  State<FoodScreen> createState() => _FoodScreenState();
+  ConsumerState<FoodScreen> createState() => _FoodScreenState();
 }
 
-class _FoodScreenState extends State<FoodScreen> {
+class _FoodScreenState extends ConsumerState<FoodScreen> {
   String selectedCategory = 'All';
 
   void updateCategory(String category) {
@@ -22,21 +24,7 @@ class _FoodScreenState extends State<FoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredList =
-        foodList.where((item) {
-          final matchesCategory =
-              selectedCategory == 'All' ||
-              item.categories.contains(selectedCategory);
-          final matchesSearch =
-              widget.searchQuery.toLowerCase().isEmpty ||
-              item.title.toLowerCase().contains(
-                widget.searchQuery.toLowerCase(),
-              ) ||
-              item.subTitle.toLowerCase().contains(
-                widget.searchQuery.toLowerCase(),
-              );
-          return matchesCategory && matchesSearch;
-        }).toList();
+    final menusAsync = ref.watch(menuListProvider);
 
     return Column(
       children: [
@@ -44,7 +32,33 @@ class _FoodScreenState extends State<FoodScreen> {
           selectedCategory: selectedCategory,
           onCategoryChanged: updateCategory,
         ),
-        Recomendedfoods(filteredItems: filteredList),
+        Expanded(
+          child: menusAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, _) => Center(child: Text('Error: $err')),
+            data: (menus) {
+              final filteredList =
+                  menus.where((item) {
+                    final matchesCategory =
+                        selectedCategory == 'All' ||
+                        (item.menuCategory != null &&
+                            item.menuCategory!.toLowerCase() ==
+                                selectedCategory.toLowerCase());
+                    final matchesSearch =
+                        widget.searchQuery.isEmpty ||
+                        item.menuName.toLowerCase().contains(
+                          widget.searchQuery.toLowerCase(),
+                        ) ||
+                        item.menuDescription.toLowerCase().contains(
+                          widget.searchQuery.toLowerCase(),
+                        );
+                    return matchesCategory && matchesSearch;
+                  }).toList();
+
+              return Recomendedfoods(filteredItems: filteredList);
+            },
+          ),
+        ),
       ],
     );
   }
