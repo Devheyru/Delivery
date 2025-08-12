@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minoo_deleivery/utils/RecomendedFoods.dart';
+import 'package:minoo_deleivery/utils/menu_item.dart';
 
 class CartItem {
-  final FoodItem food;
+  final MenuItem food;
   int quantity;
 
   CartItem({required this.food, this.quantity = 1});
@@ -11,25 +11,27 @@ class CartItem {
 class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super([]);
 
-  void addItem(FoodItem food, int quantity) {
-    final index = state.indexWhere((item) => item.food.title == food.title);
+  void addItem(MenuItem food, int quantity) {
+    final index = state.indexWhere(
+      (item) => item.food.menuName == food.menuName,
+    );
     if (index == -1) {
-      // Add new item with passed quantity
       state = [...state, CartItem(food: food, quantity: quantity)];
     } else {
-      // Increment existing quantity by passed quantity
       final updatedList = [...state];
       updatedList[index].quantity += quantity;
       state = updatedList;
     }
   }
 
-  void removeItem(FoodItem food) {
-    state = state.where((item) => item.food.title != food.title).toList();
+  void removeItem(MenuItem food) {
+    state = state.where((item) => item.food.menuName != food.menuName).toList();
   }
 
-  void updateQuantity(FoodItem food, int quantity) {
-    final index = state.indexWhere((item) => item.food.title == food.title);
+  void updateQuantity(MenuItem food, int quantity) {
+    final index = state.indexWhere(
+      (item) => item.food.menuName == food.menuName,
+    );
     if (index != -1) {
       final updatedList = [...state];
       if (quantity <= 0) {
