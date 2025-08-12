@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/providers/cart_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Cartpage extends ConsumerStatefulWidget {
   const Cartpage({super.key});
@@ -19,14 +20,15 @@ class _CartpageState extends ConsumerState<Cartpage> {
     final totalPrice = cartItems.fold<double>(
       0,
       (previousValue, element) =>
-          previousValue + element.food.price * element.quantity,
+          previousValue + element.food.menuPrice * element.quantity,
     );
+
     return Scaffold(
       body: Stack(
         children: [
           Column(
             children: [
-              // Top Bar (same as before)
+              // Top Bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
@@ -62,18 +64,15 @@ class _CartpageState extends ConsumerState<Cartpage> {
                 height: 413,
                 child:
                     cartItems.isEmpty
-                        ? Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
+                        ? const Padding(
+                          padding: EdgeInsets.only(top: 20.0),
                           child: Text(
                             'Your cart is empty',
                             style: TextStyle(fontSize: 30),
                           ),
                         )
                         : ListView.builder(
-                          padding: const EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           itemCount: cartItems.length,
                           itemBuilder: (context, index) {
                             final cartItem = cartItems[index];
@@ -122,11 +121,18 @@ class _CartpageState extends ConsumerState<Cartpage> {
                                       color: Colors.grey[300],
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: Image.asset(
-                                      food.imageUrl,
+                                    child: CachedNetworkImage(
+                                      imageUrl: food.imageUrl,
                                       height: 120,
                                       width: 120,
                                       fit: BoxFit.contain,
+                                      placeholder:
+                                          (context, url) => const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) =>
+                                              Text(error.toString()),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
@@ -139,18 +145,26 @@ class _CartpageState extends ConsumerState<Cartpage> {
                                       children: [
                                         Row(
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  food.title,
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
+                                            Flexible(
+                                              // <-- Wrap this Column or just the Text
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    food.menuName,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                    ),
+                                                    maxLines:
+                                                        2, // optional: limit max lines
+                                                    overflow:
+                                                        TextOverflow
+                                                            .ellipsis, // optional: show ... if too long
                                                   ),
-                                                ),
-                                                Text(food.subTitle),
-                                              ],
+                                                  Text(food.menuCategory ?? ''),
+                                                ],
+                                              ),
                                             ),
                                             const Spacer(),
                                             _iconButton(
@@ -164,11 +178,11 @@ class _CartpageState extends ConsumerState<Cartpage> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 50),
+                                        const SizedBox(height: 25),
                                         Row(
                                           children: [
                                             Text(
-                                              '${(food.price * cartItem.quantity).toStringAsFixed(0)} birr',
+                                              '${(food.menuPrice * cartItem.quantity).toStringAsFixed(0)} birr',
                                               style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -274,7 +288,7 @@ class _CartpageState extends ConsumerState<Cartpage> {
                         ),
                         TextButton(
                           style: ButtonStyle(
-                            overlayColor: MaterialStateProperty.all(
+                            overlayColor: WidgetStateProperty.all(
                               const Color.fromARGB(255, 22, 94, 22),
                             ),
                           ),

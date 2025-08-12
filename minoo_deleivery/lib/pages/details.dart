@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minoo_deleivery/providers/cart_provider.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
-import 'package:minoo_deleivery/utils/RecomendedFoods.dart';
+import 'package:minoo_deleivery/utils/menu_item.dart';
 
 class DetailsPage extends ConsumerStatefulWidget {
-  final String imageUrl, title, description, subTitle;
+  final String imageUrl, id, title, description, subTitle;
   final double price;
 
   const DetailsPage({
@@ -15,6 +15,7 @@ class DetailsPage extends ConsumerStatefulWidget {
     required this.subTitle,
     required this.description,
     required this.price,
+    required this.id,
   });
 
   @override
@@ -90,18 +91,24 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             ),
             const SizedBox(height: 10),
 
-            // Product image
             Center(
-              child: Image.asset(
+              child: Image.network(
                 widget.imageUrl,
                 height: screenHeight / 3,
                 fit: BoxFit.contain,
+                errorBuilder:
+                    (context, error, stackTrace) => Image.asset(
+                      'assets/images/pizza1.png',
+                      height: screenHeight / 3,
+                    ),
               ),
             ),
             const SizedBox(height: 20),
 
             // Title & price
             Text(widget.title, style: AppWidget.LeadingTextStyle()),
+            Text(widget.subTitle, style: AppWidget.signUpTextStyle()),
+
             Text(
               '${widget.price.toStringAsFixed(2)} Birr',
               style: AppWidget.PriceTextStyle(),
@@ -169,16 +176,20 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(15),
                   onTap: () {
-                    // Create FoodItem to add to cart
-                    final food = FoodItem(
-                      imageUrl: widget.imageUrl,
-                      title: widget.title,
-                      subTitle: widget.subTitle,
-                      isLiked: false, // default or adjust if needed
-                      rating: 0, // you may want to pass rating if available
-                      categories: [], // add categories if available
-                      description: widget.description,
-                      price: widget.price,
+                    final food = MenuItem(
+                      id: int.parse(widget.id),
+                      vendorId: '',
+                      publicId: '',
+                      menuName: widget.title,
+                      menuDescription: widget.description,
+                      menuPrice: widget.price,
+                      menuImg: widget.imageUrl.replaceFirst(
+                        'https://minoodelivery.com/',
+                        '',
+                      ),
+                      menuCategory: widget.subTitle,
+                      createdAt: DateTime.now(),
+                      updatedAt: DateTime.now(),
                     );
 
                     ref.read(cartProvider.notifier).addItem(food, quantity);
@@ -186,7 +197,7 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          '${widget.title} x$quantity added to cart',
+                          '${widget.title} $quantity added to cart',
                         ),
                       ),
                     );
