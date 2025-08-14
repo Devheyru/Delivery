@@ -98,7 +98,7 @@ class _LoginState extends State<Login> {
                         Center(
                           child: Text(
                             "LogIn",
-                            style: AppWidget.LeadingTextStyle(),
+                            style: AppWidget.leadingTextStyle(),
                           ),
                         ),
 
@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
                           children: [
                             Text(
                               'Don\'t have an account?',
-                              style: AppWidget.SimpleOnboardingTextStyle(),
+                              style: AppWidget.simpleOnboardingTextStyle(),
                             ),
                             TextButton(
                               isSemanticButton: false,

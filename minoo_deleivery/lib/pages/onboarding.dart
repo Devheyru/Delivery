@@ -22,13 +22,13 @@ class _OnboardingState extends State<Onboarding> {
             Text(
               textAlign: TextAlign.center,
               "The fastest\nFood Delivery!",
-              style: AppWidget.OnboardingTextStyle(),
+              style: AppWidget.onboardingTextStyle(),
             ),
             const SizedBox(height: 20.0),
             Text(
               textAlign: TextAlign.center,
               "Order your favorite food from\nyour favorite restaurants and\nhave it delivered to your \ndoorstep.",
-              style: AppWidget.SimpleOnboardingTextStyle(),
+              style: AppWidget.simpleOnboardingTextStyle(),
             ),
 
             const SizedBox(height: 30.0),
