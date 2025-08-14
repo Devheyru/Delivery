@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:minoo_deleivery/providers/cart_provider.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 import 'package:minoo_deleivery/utils/menu_item.dart';
@@ -92,33 +93,39 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             const SizedBox(height: 10),
 
             Center(
-              child: Image.network(
-                widget.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: widget.imageUrl,
                 height: screenHeight / 3,
-                fit: BoxFit.contain,
-                errorBuilder:
-                    (context, error, stackTrace) => Image.asset(
-                      'assets/images/pizza1.png',
+                fit: BoxFit.fill,
+                placeholder:
+                    (context, url) => SizedBox(
                       height: screenHeight / 3,
+                      child: const Center(
+                        child: CircularProgressIndicator(color: primaryColor),
+                      ),
                     ),
+                errorWidget:
+                    (context, url, error) =>
+                        Center(child: Text("Imege Not Found")),
               ),
             ),
             const SizedBox(height: 20),
 
-            // Title & price
-            Text(widget.title, style: AppWidget.LeadingTextStyle()),
+            Text(widget.title, style: AppWidget.detailsTitleText()),
             Text(widget.subTitle, style: AppWidget.signUpTextStyle()),
 
             Text(
               '${widget.price.toStringAsFixed(2)} Birr',
-              style: AppWidget.PriceTextStyle(),
+              style: AppWidget.priceTextStyle(),
             ),
             const SizedBox(height: 30),
 
             // Description
             Text(
               widget.description,
-              style: AppWidget.SimpleOnboardingTextStyle(),
+              style: AppWidget.simpleOnboardingTextStyle(),
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 10),
 
@@ -141,7 +148,6 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             ),
             const SizedBox(height: 10),
 
-            // Total price & quantity controls
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -149,7 +155,7 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
                     '${totalPrice.toStringAsFixed(2)} Birr',
-                    style: AppWidget.TotalPriceTextStyle(),
+                    style: AppWidget.totalPriceTextStyle(),
                   ),
                 ),
                 Row(
@@ -158,7 +164,7 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                     const SizedBox(width: 20),
                     Text(
                       quantity.toString(),
-                      style: AppWidget.LeadingTextStyle(),
+                      style: AppWidget.leadingTextStyle(),
                     ),
                     const SizedBox(width: 20),
                     buildActionButton(Icons.remove, () => updateQuantity(-1)),
@@ -168,7 +174,6 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             ),
             const SizedBox(height: 20),
 
-            // Order button
             Center(
               child: Material(
                 borderRadius: BorderRadius.circular(15),
