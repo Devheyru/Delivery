@@ -98,7 +98,7 @@ class _SignupState extends State<Signup> {
                         Center(
                           child: Text(
                             "SignUp",
-                            style: AppWidget.LeadingTextStyle(),
+                            style: AppWidget.leadingTextStyle(),
                           ),
                         ),
                         SizedBox(height: 10.0),
@@ -174,7 +174,7 @@ class _SignupState extends State<Signup> {
                           children: [
                             Text(
                               'Already have an account?',
-                              style: AppWidget.SimpleOnboardingTextStyle(),
+                              style: AppWidget.simpleOnboardingTextStyle(),
                             ),
                             TextButton(
                               isSemanticButton: false,
