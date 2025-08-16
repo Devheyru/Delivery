@@ -35,14 +35,7 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                 padding: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0xFF6A6A6A),
-                      blurRadius: 3,
-                      offset: Offset(-1, -1),
-                    ),
-                  ],
+                  color: Color(0xffececf9),
                 ),
                 child: GestureDetector(
                   onTap:
@@ -78,25 +71,29 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                                   width: 91,
                                   height: 11,
                                   decoration: BoxDecoration(
-                                    color: const Color.fromRGBO(0, 0, 0, 0.35),
+                                    color: const Color.fromRGBO(0, 0, 0, 1),
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 110,
+                              width: 140,
                               height: 111.76,
-                              child: CachedNetworkImage(
-                                imageUrl: item.imageUrl,
-                                placeholder:
-                                    (context, url) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                errorWidget:
-                                    (context, url, error) =>
-                                        Image.asset('assets/images/pizza1.png'),
-                                fit: BoxFit.fill,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: CachedNetworkImage(
+                                  imageUrl: item.imageUrl,
+                                  placeholder:
+                                      (context, url) => const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) => Text(
+                                        "Error! Some Somthing went wrong",
+                                      ),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ],
@@ -113,7 +110,6 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
 
@@ -129,7 +125,9 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${item.menuPrice.toStringAsFixed(0)} ETB',
+                              //Commented to hide price
+                              // '${item.menuPrice.toStringAsFixed(0)} ETB',
+                              '',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,

@@ -50,13 +50,7 @@ class _HomeContentState extends State<HomeContent> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: GestureDetector(
-                        onTap:
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Signup(),
-                              ),
-                            ),
+                        onTap: () => Navigator.pushNamed(context, '/signUp'),
                         child: Image.asset(
                           "assets/images/abushe.jpg",
                           width: 60,

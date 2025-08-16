@@ -144,6 +144,7 @@ class _SignupState extends State<Signup> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TextField(
+                            obscureText: true,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter password",
@@ -179,12 +180,7 @@ class _SignupState extends State<Signup> {
                             TextButton(
                               isSemanticButton: false,
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Login(),
-                                  ),
-                                );
+                                Navigator.pushNamed(context, '/logIn');
                               },
                               child: Text(
                                 'Login',

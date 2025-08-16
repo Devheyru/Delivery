@@ -37,10 +37,11 @@ class _LoginState extends State<Login> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushAndRemoveUntil(
+                          Navigator.pushNamedAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (_) => Home()),
-                            (route) => false,
+                            '/home',
+                            (Route<dynamic> route) =>
+                                false, // remove ALL previous routes
                           );
                         },
                         child: Container(
@@ -129,6 +130,7 @@ class _LoginState extends State<Login> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TextField(
+                            obscureText: true,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter password",

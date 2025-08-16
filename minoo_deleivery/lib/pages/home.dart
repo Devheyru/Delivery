@@ -31,27 +31,30 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: CurvedNavigationBar(
-        index: currentTabIndex,
-        items: const [
-          Icon(Icons.home, size: 24, color: Colors.white),
-          Icon(Icons.favorite, size: 24, color: Colors.white),
-          Icon(Icons.wallet, size: 24, color: Colors.white),
-          Icon(Icons.shopping_cart, size: 24, color: Colors.white),
-        ],
-        height: MediaQuery.of(context).size.height * 0.065,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
         backgroundColor: Colors.white,
-        color: const Color(0xFFf59e0b),
-        animationDuration: const Duration(milliseconds: 300),
-        onTap: (int index) {
-          setState(() {
-            currentTabIndex = index;
-          });
-        },
+        bottomNavigationBar: CurvedNavigationBar(
+          index: currentTabIndex,
+          items: const [
+            Icon(Icons.home, size: 24, color: Colors.white),
+            Icon(Icons.favorite, size: 24, color: Colors.white),
+            Icon(Icons.wallet, size: 24, color: Colors.white),
+            Icon(Icons.shopping_cart, size: 24, color: Colors.white),
+          ],
+          height: MediaQuery.of(context).size.height * 0.065,
+          backgroundColor: Colors.white,
+          color: const Color(0xFFf59e0b),
+          animationDuration: const Duration(milliseconds: 300),
+          onTap: (int index) {
+            setState(() {
+              currentTabIndex = index;
+            });
+          },
+        ),
+        body: SafeArea(child: pages[currentTabIndex]),
       ),
-      body: SafeArea(child: pages[currentTabIndex]),
     );
   }
 }
