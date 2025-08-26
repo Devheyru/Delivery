@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 

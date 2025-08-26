@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/utils/food_screen.dart';
 
 class HomeContent extends StatefulWidget {
