@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/menu_provider.dart'; // Your Riverpod provider file
+import '../providers/menu/menu_provider.dart'; // Your Riverpod provider file
 import 'Recomendedfoods.dart';
 import 'foodCatagories.dart';
 
