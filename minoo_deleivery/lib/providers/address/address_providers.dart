@@ -6,6 +6,25 @@ import 'package:minoo_deleivery/models/destination_address.dart';
 
 const String baseUrl = "https://minoodelivery.com/delivery-zones";
 
+// --- Immutable class for distance keys ---
+class DistanceIds {
+  final int centerId;
+  final int destinationId;
+
+  const DistanceIds(this.centerId, this.destinationId);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DistanceIds &&
+          runtimeType == other.runtimeType &&
+          centerId == other.centerId &&
+          destinationId == other.destinationId;
+
+  @override
+  int get hashCode => centerId.hashCode ^ destinationId.hashCode;
+}
+
 // 1. Fetch all delivery centers
 final deliveryCentersProvider = FutureProvider<List<DeliveryCenter>>((
   ref,
@@ -42,21 +61,35 @@ final destinationsProvider = FutureProvider.family<List<Destination>, int>((
 final selectedDestinationProvider = StateProvider<Destination?>((ref) => null);
 
 // 3. Fetch distance between center + destination
-final distanceProvider = FutureProvider.family<double, Map<String, int>>((
+final distanceProvider = FutureProvider.family<double, DistanceIds>((
   ref,
   ids,
 ) async {
-  final centerId = ids['center']!;
-  final destId = ids['destination']!;
+  try {
+    final url = "$baseUrl/distance/${ids.centerId}/${ids.destinationId}";
+    print("🌍 Fetching from: $url");
 
-  final response = await http.get(
-    Uri.parse("$baseUrl/distance/$centerId/$destId"),
-  );
+    final response = await http.get(Uri.parse(url));
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return (data['distance'] as num).toDouble();
-  } else {
-    throw Exception("Failed to fetch distance");
+    print(" Status: ${response.statusCode}");
+    print(" Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // Ensure trimming & parsing safely
+      final distanceString = data['distance'].toString().trim();
+      final distance = double.parse(
+        distanceString,
+      ); // throws if invalid → helps debugging
+
+      print("✅ Parsed distance: $distance");
+      return distance;
+    } else {
+      throw Exception("Failed to fetch distance: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("❌ Error parsing distance: $e");
+    throw Exception("Error fetching distance: $e");
   }
 });
