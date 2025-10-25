@@ -67,12 +67,8 @@ final distanceProvider = FutureProvider.family<double, DistanceIds>((
 ) async {
   try {
     final url = "$baseUrl/distance/${ids.centerId}/${ids.destinationId}";
-    print("🌍 Fetching from: $url");
 
     final response = await http.get(Uri.parse(url));
-
-    print(" Status: ${response.statusCode}");
-    print(" Body: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -83,13 +79,11 @@ final distanceProvider = FutureProvider.family<double, DistanceIds>((
         distanceString,
       ); // throws if invalid → helps debugging
 
-      print("✅ Parsed distance: $distance");
       return distance;
     } else {
       throw Exception("Failed to fetch distance: ${response.statusCode}");
     }
   } catch (e) {
-    print("❌ Error parsing distance: $e");
     throw Exception("Error fetching distance: $e");
   }
 });
