@@ -1,15 +1,7 @@
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
-}
-
 android {
     namespace = "com.example.minoo_deleivery"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -18,6 +10,12 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 
     packaging {
@@ -45,6 +43,13 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            // ✅ DISABLE splits for debug builds - this creates universal APK
+            splits.abi.isEnable = false
+            splits.density.isEnable = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+
         getByName("release") {
             // Use release signing (currently debug keystore for testing)
             signingConfig = signingConfigs.getByName("release")
@@ -58,20 +63,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // ✅ Keep splits ENABLED only for release (optional)
+            splits.abi.isEnable = true
+            splits.abi.reset()
+            splits.abi.include("armeabi-v7a", "arm64-v8a") // Remove x86_64 if not needed
+            splits.abi.isUniversalApk = false
         }
     }
-
-    // ✅ Split per ABI to avoid large universal APK
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = false
-        }
-    }
-}
-
-flutter {
-    source = "../.."
 }
