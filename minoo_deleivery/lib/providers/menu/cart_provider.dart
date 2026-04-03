@@ -51,3 +51,12 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>(
   (ref) => CartNotifier(),
 );
+
+final totalPriceProvider = Provider<double>((ref) {
+  final cartItems = ref.watch(cartProvider);
+  return cartItems.fold<double>(
+    0,
+    (previousValue, element) =>
+        previousValue + element.food.menuPrice * element.quantity,
+  );
+});

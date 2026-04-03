@@ -1,14 +1,7 @@
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
-}
-
 android {
     namespace = "com.example.minoo_deleivery"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -19,27 +12,57 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.minoo_deleivery"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 23
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    signingConfigs {
+        create("release") {
+            // ⚠️ Replace this with your real release keystore when publishing
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
+            storePassword = "android"
+        }
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("debug") {
+            // ✅ DISABLE splits for debug builds - this creates universal APK
+            splits.abi.isEnable = false
+            splits.density.isEnable = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+
+        getByName("release") {
+            // Use release signing (currently debug keystore for testing)
+            signingConfig = signingConfigs.getByName("release")
+
+            // ✅ Enable shrinking & minification
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            // ✅ ProGuard/R8 rules
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            // ✅ Keep splits ENABLED only for release (optional)
+            splits.abi.isEnable = true
+            splits.abi.reset()
+            splits.abi.include("armeabi-v7a", "arm64-v8a") // Remove x86_64 if not needed
+            splits.abi.isUniversalApk = false
         }
     }
-    ndkVersion = "27.0.12077973"
-}
-
-flutter {
-    source = "../.."
 }

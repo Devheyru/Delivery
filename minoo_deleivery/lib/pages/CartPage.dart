@@ -21,11 +21,7 @@ class _CartpageState extends ConsumerState<Cartpage> {
     final cartItems = ref.watch(cartProvider); // <-- watch cart
     final selectedAddress = ref.watch(selectedCenterProvider);
     final selectedDestination = ref.watch(selectedDestinationProvider);
-    final totalPrice = cartItems.fold<double>(
-      0,
-      (previousValue, element) =>
-          previousValue + element.food.menuPrice * element.quantity,
-    );
+    final totalPrice = ref.watch(totalPriceProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -388,12 +384,55 @@ class _CartpageState extends ConsumerState<Cartpage> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PricedetailsPage(),
-                            ),
-                          );
+                          if (cartItems.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("Cart Empty"),
+                                  content: const Text(
+                                    "You have no items in your cart.",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else if (selectedDestination == null &&
+                              selectedAddress == null) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("Address not Selected"),
+                                  content: const Text(
+                                    "Select Delivery center and Destination",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CheckoutSummaryPage(),
+                              ),
+                            );
+                          }
                         },
                         child: Text(
                           "Place Order",
