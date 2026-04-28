@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRS: Minoo Delivery Ordering Systems</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 40px auto; padding: 20px; background-color: #f4f7f9; }
+        .container { background: white; padding: 40px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e1e8ed; }
+        h1 { color: #d97706; border-bottom: 3px solid #d97706; padding-bottom: 10px; text-align: center; }
+        h2 { color: #1f2937; border-left: 5px solid #d97706; padding-left: 15px; margin-top: 30px; }
+        h3 { color: #4b5563; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; }
+        th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+        th { background-color: #f9fafb; font-weight: bold; }
+        .math-block { background: #fffbeb; border: 1px solid #fef3c7; padding: 15px; border-radius: 8px; font-family: "Courier New", Courier, monospace; overflow-x: auto; margin: 15px 0; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 0.85em; font-weight: bold; background: #fef3c7; color: #92400e; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        .footer { margin-top: 50px; text-align: center; font-size: 0.9em; color: #9ca3af; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SRS: Minoo Delivery Ordering Systems</h1>
+
+    <h2>1. Feature Overview</h2>
+    <p>The ordering module is divided into two distinct flows to cater to <strong>"Express"</strong> buyers and <strong>"Bulk/Grocery"</strong> shoppers. Both flows rely on a <strong>Zone-to-Center-to-Destination</strong> logistics model.</p>
+    
+    <h3>Listing Types Supported</h3>
+    <ul>
+        <li><strong>Menu Listing:</strong> Individual dishes for immediate consumption.</li>
+        <li><strong>Hotel & Restaurant Listings:</strong> Specialized vendor-based browsing.</li>
+        <li><strong>Fruit Listing:</strong> Fresh produce categorized for market-style shopping.</li>
+    </ul>
+
+    <h2>2. Ordering Mechanisms & Workflows</h2>
+    
+    <h3>A. Single Item Ordering (Express Flow)</h3>
+    <p>This workflow is used when a user clicks <em>"Order Now"</em> directly from a listing.</p>
+    <ul>
+        <li><strong>Logic:</strong> The system processes one <code>menu_id</code> and one <code>vendor_id</code>.</li>
+        <li><strong>Distance Calculation:</strong> 
+            <br>Segment 1: Vendor's Zone &rarr; Selected Delivery Center.
+            <br>Segment 2: Selected Delivery Center &rarr; Final Destination.
+        </li>
+        <li><strong>Pricing:</strong> <div class="math-block">Total = Item Price + (Total Distance × 50)</div></li>
+        <li><strong>Checkout:</strong> User uploads one payment screenshot for that specific item.</li>
+    </ul>
+
+    <h3>B. Cart Ordering (Multi-Vendor Flow)</h3>
+    <p>The "Collector" workflow. It allows items from different vendors and different delivery zones to be purchased in one transaction.</p>
+    <ul>
+        <li><strong>Aggregation Logic:</strong> The system sums the <code>price × quantity</code> for all items in the cart array.</li>
+        <li><strong>Complex Logistics:</strong> The system identifies all <strong>unique</strong> vendor zones in the cart and fetches the distance from each unique zone to the chosen Delivery Center.</li>
+        <li><strong>Combined Distance Formula:</strong>
+            <div class="math-block">Total Distance = (Σ Unique Vendor Distances to Center) + Center to Final Destination Distance</div>
+        </li>
+        <li><strong>Checkout:</strong> One single "Master Payment." User pays the consolidated total and uploads one screenshot to validate the entire cart.</li>
+    </ul>
+
+    <h2>3. Detailed Logistics & Pricing Formula</h2>
+    <p>Minoo Delivery uses a <strong>Hub-and-Spoke</strong> model. Delivery passes through a "Delivery Center" for sorting.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Definition</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Delivery Center</strong></td>
+                <td>The central hub where drivers collect items.</td>
+            </tr>
+            <tr>
+                <td><strong>Vendor Zone</strong></td>
+                <td>The geographic location of the restaurant or fruit shop.</td>
+            </tr>
+            <tr>
+                <td><strong>Final Destination</strong></td>
+                <td>The user's specific location (Office, Home).</td>
+            </tr>
+            <tr>
+                <td><strong>Rate</strong></td>
+                <td>50 Br per unit of distance.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. User Dashboard Requirements</h2>
+    <ul>
+        <li><strong>Order Type Badge:</strong> Clearly label if an entry was a <span class="badge">Single Item</span> or a <span class="badge">Cart Order</span>.</li>
+        <li><strong>Item Breakdown:</strong> 
+            <br><em>Single Orders:</em> Show item name, image, and vendor.
+            <br><em>Cart Orders:</em> Show an expandable list of all items in that transaction.
+        </li>
+        <li><strong>Logistics Summary:</strong> Display the chosen Delivery Center and Destination.</li>
+        <li><strong>Status Tracking:</strong>
+            <ul>
+                <li><strong>Pending:</strong> Payment screenshot uploaded, awaiting admin.</li>
+                <li><strong>Processing:</strong> Payment confirmed; vendor is preparing.</li>
+                <li><strong>Out for Delivery:</strong> Driver collected items from Center.</li>
+                <li><strong>Completed:</strong> Items received by user.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>5. Technical Data Handling (Developer Reference)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Description</th>
+                <th>Source</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>cart_tpss</code></td>
+                <td>Payment receipt file upload.</td>
+                <td>User Input</td>
+            </tr>
+            <tr>
+                <td><code>cart_delivery_price</code></td>
+                <td>Shipping fee (Dist × 50).</td>
+                <td>JS Calculation</td>
+            </tr>
+            <tr>
+                <td><code>cart_items[]</code></td>
+                <td>JSON string of cart items.</td>
+                <td>PHP/Session</td>
+            </tr>
+            <tr>
+                <td><code>destination_id</code></td>
+                <td>ID of the drop-off point.</td>
+                <td>Dropdown</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        &copy; 2026 Minoo Delivery System Documentation
+    </div>
+</div>
+
+</body>
+</html>
