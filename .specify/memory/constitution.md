@@ -1,137 +1,155 @@
+<!--
+  Sync Impact Report
+  ===================
+  Version change: 0.0.0 (template) → 1.0.0
+  Modified principles: N/A (initial population)
+  Added sections:
+    - Principle I: Flutter-First Architecture
+    - Principle II: Firebase as Backend
+    - Principle III: State Management via Riverpod
+    - Principle IV: Offline-Resilient & Performance
+    - Principle V: Simplicity & YAGNI
+    - Section: Technology Stack & Constraints
+    - Section: Development Workflow
+    - Governance rules
+  Removed sections: None
+  Templates requiring updates:
+    - .specify/templates/plan-template.md ✅ no changes needed
+    - .specify/templates/spec-template.md ✅ no changes needed
+    - .specify/templates/tasks-template.md ✅ no changes needed
+  Follow-up TODOs: None
+-->
+
 # Minoo Delivery Constitution
 
-> Governing principles for all `/speckit.*` outputs and development work in this repository.
+## Core Principles
 
----
+### I. Flutter-First Architecture
 
-## 1. Engineering Principles
+- All client-facing features MUST be implemented in Flutter
+  (Dart SDK ^3.7.2) targeting Android and iOS as primary platforms.
+- The project MUST follow the established directory layout:
+  `lib/models/`, `lib/providers/`, `lib/repositories/`,
+  `lib/services/`, `lib/pages/`, `lib/utils/`.
+- New features MUST NOT introduce additional frameworks or
+  rendering engines (e.g., WebView for core flows) unless
+  explicitly approved via a governance amendment.
+- Every UI component MUST use Material Design widgets and
+  the project's shared theme constants; ad-hoc inline styles
+  are prohibited.
 
-### I. Clarity > Cleverness
-- Write code that reads like documentation. Prefer descriptive variable and function names over terse abbreviations.
-- Dart idioms (named parameters, null-safety, `const` constructors) are expected — but never sacrifice readability for "clever" Dart tricks.
+### II. Firebase as Backend
 
-### II. Simple First
-- Start with the simplest implementation that solves the problem.
-- Avoid premature abstraction. Extract shared code only after two or more concrete uses.
-- YAGNI: do not build features, parameters, or extension points until they are needed.
+- Firebase MUST remain the sole backend-as-a-service provider
+  for authentication, Firestore data persistence, Cloud Storage
+  (payment screenshots, menu images), and push notifications.
+- All Firestore collections MUST have documented schemas in
+  `lib/models/` as Dart data classes with `fromJson`/`toJson`
+  serialization.
+- Security rules for Firestore and Cloud Storage MUST be
+  version-controlled alongside application code and reviewed
+  before deployment.
+- Direct Firestore calls from UI widgets are prohibited;
+  all data access MUST flow through the repository layer
+  (`lib/repositories/`).
 
-### III. Correctness
-- All business logic must produce correct results before optimizing for performance or aesthetics.
-- Null-safety must be enforced project-wide; avoid `!` (bang operator) unless the invariant is documented.
-- Use `flutter analyze` with zero warnings as the quality gate before every PR.
+### III. State Management via Riverpod
 
-### IV. Testability
-- New business logic (providers, repositories, services, models) must include unit tests.
-- Widget tests are expected for non-trivial UI components.
-- Integration tests should cover critical user flows (onboarding → login → home → cart → payment).
+- Riverpod (`flutter_riverpod`) MUST be the sole state
+  management solution; mixing with setState-heavy patterns,
+  BLoC, or Provider is prohibited.
+- Providers MUST reside in `lib/providers/` and be organized
+  by domain (e.g., `order_providers.dart`, `cart_providers.dart`).
+- Business logic MUST live in providers or services—never
+  directly inside widget `build()` methods.
+- Every provider that performs async work MUST expose loading,
+  error, and data states via `AsyncValue` or equivalent.
 
----
+### IV. Offline-Resilient & Performance
 
-## 2. Architecture Conventions
+- The app MUST cache critical read-only data (menus, vendor
+  listings, delivery centers) using `cached_network_image` for
+  images and `shared_preferences` for lightweight key-value
+  data so users can browse content without connectivity.
+- Write operations (placing orders, uploading payment
+  screenshots) MAY require connectivity but MUST surface a
+  clear, user-friendly error when the network is unavailable.
+- UI frames MUST target 60 fps on mid-range devices; heavy
+  computations (distance calculations, cart aggregation) MUST
+  run outside the main isolate or use `compute()`.
+- Image assets MUST be optimized before committing; maximum
+  individual asset size is 500 KB.
 
-### Layer Structure
-```
-lib/
-  main.dart             ← app entry point, routing, theme
-  models/               ← plain data classes (no business logic)
-  providers/            ← Riverpod providers (state management)
-  repositories/         ← data-access layer (API calls, local storage)
-  services/             ← cross-cutting utilities (widgets, helpers)
-  pages/                ← full-screen UI widgets
-  utils/                ← pure utility functions
-```
+### V. Simplicity & YAGNI
 
-### Dependency Flow
-```
-Pages → Providers → Repositories → External APIs / Local Storage
-                  → Services (cross-cutting)
-         Models are shared across all layers
-```
+- Features MUST start with the simplest viable implementation;
+  premature abstractions are prohibited.
+- No code MUST be added speculatively—every line MUST trace
+  back to a user story or explicit requirement in the SRS.
+- When two approaches have comparable outcomes, the one with
+  fewer moving parts MUST be chosen.
+- Dependencies MUST NOT be added without justification;
+  the current dependency set (see `pubspec.yaml`) is the
+  baseline and additions require documented rationale.
 
-- **Pages** depend on providers via `ref.watch` / `ref.read`. Pages must never call repositories directly.
-- **Providers** orchestrate business logic and expose state. They may depend on repositories, services, and models.
-- **Repositories** handle data access (HTTP, SharedPreferences, etc.). They return model objects and throw typed exceptions.
-- **Services** provide cross-cutting, stateless helpers (e.g., widget utilities). They must not hold state.
-- **Models** are pure data classes with `fromJson` / `toJson` where applicable. No side effects.
+## Technology Stack & Constraints
 
-### State Management
-- **Riverpod** is the sole state management solution. Do not mix with `StatefulWidget` state for business logic.
-- Use `StateNotifierProvider` or `NotifierProvider` for mutable state; `FutureProvider` / `StreamProvider` for async data.
-- Providers must be declared at the top level (not inside widgets).
+- **Language**: Dart (SDK ^3.7.2)
+- **Framework**: Flutter (uses-material-design: true)
+- **Backend**: Firebase (Firestore, Auth, Cloud Storage)
+- **State Management**: flutter_riverpod
+- **HTTP**: `http` package for any REST calls outside Firebase
+- **Image Handling**: `cached_network_image`, `image_picker`
+- **Local Storage**: `shared_preferences`
+- **Permissions**: `permission_handler`
+- **Dev Tooling**: `device_preview` for responsive testing
+- **Target Platforms**: Android (primary), iOS (secondary)
+- **Minimum Flutter version**: Stable channel, SDK ^3.7.2
+- **Naming Convention**: snake_case for files and directories,
+  PascalCase for classes, camelCase for variables/methods
+- **Pricing Model**: Hub-and-Spoke logistics at 50 Br per
+  distance unit (Zone → Center → Destination)
+- **Payment**: Screenshot-based manual verification by admin
 
-### Backend Access
-- All backend communication goes through the **repository layer** using the `http` package.
-- If/when Supabase is introduced: Flutter clients must **never** talk to Supabase directly. All Supabase access must go through API routes (server-side), and the Flutter app communicates only with those endpoints.
+## Development Workflow
 
----
-
-## 3. Security Baseline
-
-- **Validate inputs** at every boundary: form fields in the UI, parameters in repositories, responses from APIs.
-- **Least privilege**: request only the permissions the feature actually needs (`permission_handler`).
-- **No secrets in code**: API keys, tokens, and credentials must live in environment configuration, never hard-coded.
-- **Auth by default**: every new route/page that shows user-specific data must verify authentication state before rendering.
-
----
-
-## 4. DX Conventions
-
-### File Naming
-- Dart files: `snake_case.dart` (e.g., `cart_page.dart`, `delivery_center_model.dart`).
-  - Legacy PascalCase files (e.g., `CartPage.dart`) are tolerated but **new** files must use `snake_case`.
-- One public class per file. The file name must match the primary class name in snake_case.
-
-### Folder Structure
-- Follow the layer structure in §2. Do not create ad-hoc top-level directories without updating this constitution.
-- Group related files by feature subdirectory when a feature spans multiple files in the same layer (e.g., `repositories/address/`, `repositories/menu/`).
-
-### Commit Hygiene
-- Commits should be atomic: one logical change per commit.
-- Commit messages use imperative mood: `Add cart item quantity selector`, not `Added…` or `Adding…`.
-- Prefix with area when useful: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`.
-
-### Code Style
-- Follow `flutter_lints` rules as configured in `analysis_options.yaml`.
-- Use `const` constructors wherever possible.
-- Prefer `final` over `var`.
-- Use trailing commas for multi-line argument lists (Dart formatter friendly).
-
----
-
-## 5. Documentation Expectations
-
-- **Spec / Plan / Tasks** files (`.specify/`) are the source of truth for feature work. Code changes that contradict the spec require the spec to be updated first.
-- Complex business logic should include a doc comment explaining *why*, not just *what*.
-- README.md should remain up to date with setup instructions and project overview.
-
----
-
-## 6. Performance Expectations
-
-- **Avoid N+1 patterns**: batch API calls where possible; do not fetch related data inside loops.
-- **Pagination**: any list endpoint / list UI that could grow unbounded must support pagination or lazy loading.
-- **Image caching**: use `cached_network_image` for all remote images (already a dependency).
-- **Const widgets**: use `const` constructors to minimize unnecessary widget rebuilds.
-- **Minimize rebuilds**: scope Riverpod `ref.watch` to the smallest possible widget to avoid over-rendering.
-
----
-
-## 7. Repo-Specific Defaults
-
-- **Primary framework**: Flutter (Dart SDK ^3.7.2), targeting Android, iOS, Web, and desktop.
-- **State management**: `flutter_riverpod`.
-- **HTTP client**: `http` package — no direct `dio` or raw `HttpClient` usage without discussion.
-- **Image picking**: `image_picker` — all media selection goes through this package.
-- **Local persistence**: `shared_preferences` for simple key-value; evaluate Hive/Drift for structured data if needed.
-- **Dev tools**: `device_preview` is available for responsive testing; wrap only in debug mode.
-- Prefer concise editor prompts; avoid huge documentation blocks in prompts; keep explanations in chat summaries.
-
----
+- **Branching**: Feature branches named per spec-kit
+  convention (`###-feature-name`); all work branches from
+  and merges back to `main`.
+- **Commit Discipline**: Atomic commits after each logical
+  unit of work; commit messages follow
+  `type: short description` format
+  (types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`).
+- **Code Review**: Every change to `lib/` or Firebase rules
+  MUST be reviewed before merge; self-merges are prohibited
+  for production-impacting code.
+- **Testing**: Widget tests and unit tests for business logic
+  are encouraged and MUST be placed in `test/`. Integration
+  tests for critical flows (ordering, cart checkout) MUST
+  exist before a feature is considered complete.
+- **Linting**: `flutter analyze` MUST report zero errors and
+  zero warnings before any merge; the project's
+  `analysis_options.yaml` is the source of truth for lint rules.
+- **Documentation**: Every new model, service, or provider
+  MUST include a doc comment (`///`) explaining its purpose.
 
 ## Governance
 
-- This constitution supersedes ad-hoc conventions. All `/speckit.*` outputs must comply.
-- Amendments require documentation in this file with a version bump and date.
-- Any PR or code review should verify compliance with these principles.
+- This constitution supersedes all ad-hoc practices and
+  informal conventions. In case of conflict, the constitution
+  wins.
+- Amendments MUST be proposed via the `/speckit-constitution`
+  command, include a version bump rationale, and update all
+  dependent templates listed in the Sync Impact Report.
+- Versioning follows Semantic Versioning:
+  - **MAJOR**: Principle removal or backward-incompatible
+    redefinition.
+  - **MINOR**: New principle, section, or material expansion.
+  - **PATCH**: Clarifications, wording, typo fixes.
+- Compliance reviews MUST occur at the start of every new
+  feature specification (`/speckit-plan` Constitution Check).
+- The `AGENTS.md` file at the project root MUST direct all
+  agents to read the current plan for technology and
+  structural context.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-03 | **Last Amended**: 2026-04-03
+**Version**: 1.0.0 | **Ratified**: 2026-04-30 | **Last Amended**: 2026-04-30
