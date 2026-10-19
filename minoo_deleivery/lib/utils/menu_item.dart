@@ -1,3 +1,5 @@
+import 'package:minoo_deleivery/config/api_config.dart';
+
 class MenuItem {
   final int id;
   final String vendorId;
@@ -41,9 +43,7 @@ class MenuItem {
   }
 
   String get imageUrl {
-    if (menuImg.startsWith('http')) return menuImg;
-    if (menuImg.startsWith('public/'))
-      return 'https://minoodelivery.com/$menuImg';
-    return 'https://minoodelivery.com/public/$menuImg';
+    if (menuImg.isEmpty) return '';
+    return ApiConfig.imageUrl(menuImg);
   }
 }

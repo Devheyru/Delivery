@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
+import 'package:minoo_deleivery/config/api_config.dart';
 import 'package:minoo_deleivery/utils/menu_item.dart';
 
 class DetailsPage extends ConsumerStatefulWidget {
@@ -212,7 +213,7 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                       menuDescription: widget.description,
                       menuPrice: widget.price,
                       menuImg: widget.imageUrl.replaceFirst(
-                        'https://minoodelivery.com/',
+                        '${ApiConfig.baseUrl}/',
                         '',
                       ),
                       menuCategory: widget.subTitle,
