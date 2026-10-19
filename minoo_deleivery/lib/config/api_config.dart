@@ -4,13 +4,15 @@ class ApiConfig {
   ApiConfig._();
 
   /// ──────────────────────────────────────────────
-  /// 🔧  CHANGE THIS when your real server is live
+  /// 🔧  Live backend host
   /// ──────────────────────────────────────────────
-  static const String baseUrl = 'https://minoodelivery.com';
+  static const String baseUrl = 'https://minoodelivery.havanacademy.com';
 
   // Derived endpoints
   static const String menusUrl = '$baseUrl/menus';
+  static const String menuItemsUrl = '$baseUrl/menu-items';
   static const String deliveryZonesUrl = '$baseUrl/delivery-zones';
+  static const String ordersUrl = '$baseUrl/orders';
 
   static String destinationsUrl(int centerId) =>
       '$deliveryZonesUrl/destinations/$centerId';
@@ -19,8 +21,9 @@ class ApiConfig {
       '$deliveryZonesUrl/distance/$centerId/$destinationId';
 
   static String imageUrl(String path) {
-    if (path.startsWith('http')) return path;
-    if (path.startsWith('public/')) return '$baseUrl/$path';
-    return '$baseUrl/public/$path';
+    if (path.isEmpty) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    if (path.startsWith('/')) return '$baseUrl$path';
+    return '$baseUrl/$path';
   }
 }

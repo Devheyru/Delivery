@@ -26,11 +26,19 @@ class ApiService {
         throw Exception('Failed to load menus');
       }
     } on SocketException {
-      // Backend unreachable → return demo data
+      if (_client != null) {
+        throw Exception('Network error: Please check your internet connection and try again.');
+      }
       return _demoMenus();
     } on http.ClientException {
+      if (_client != null) {
+        throw Exception('Network error: Please check your internet connection and try again.');
+      }
       return _demoMenus();
     } on TimeoutException {
+      if (_client != null) {
+        throw Exception('Network error: Connection timed out. Please check your internet connection.');
+      }
       return _demoMenus();
     }
   }

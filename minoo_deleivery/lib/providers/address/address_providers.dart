@@ -96,11 +96,8 @@ final distanceProvider = FutureProvider.family<double, DistanceIds>((
       final data = jsonDecode(response.body);
 
       // Ensure trimming & parsing safely
-      final distanceString = data['distance'].toString().trim();
-      final distance = double.parse(
-        distanceString,
-      ); // throws if invalid → helps debugging
-
+      final distanceString = data['distance']?.toString().trim() ?? '';
+      final distance = double.tryParse(distanceString) ?? 5.0;
       return distance;
     } else {
       throw Exception("Failed to fetch distance: ${response.statusCode}");

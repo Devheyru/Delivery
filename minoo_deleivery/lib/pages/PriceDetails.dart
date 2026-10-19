@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minoo_deleivery/pages/payment_Proof.dart';
 import 'package:minoo_deleivery/providers/address/address_providers.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
+import 'package:minoo_deleivery/providers/order/order_provider.dart';
 
 class CheckoutSummaryPage extends ConsumerWidget {
   const CheckoutSummaryPage({super.key});
@@ -174,7 +175,34 @@ class CheckoutSummaryPage extends ConsumerWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      showPaymentDialog(context);
+                      showPaymentDialog(
+                        context,
+                        onSubmit: (file) async {
+                          final cartItems = ref.read(cartProvider);
+                          await ref
+                              .read(orderSubmissionProvider.notifier)
+                              .submitCartOrder(
+                                cartItems: cartItems,
+                                center: center,
+                                destination: destination,
+                                deliveryPrice: shippingFee,
+                                screenshotFile: file,
+                              );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('Cart order placed successfully!'),
+                              ),
+                            );
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/orders',
+                              (route) => route.settings.name == '/home',
+                            );
+                          }
+                        },
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange.shade700,

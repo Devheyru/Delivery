@@ -1,137 +1,213 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void showPaymentDialog(BuildContext context) {
-  String? selectedFile;
+/// Displays a modal dialog prompting the user to upload a payment proof screenshot.
+void showPaymentDialog(
+  BuildContext context, {
+  Future<void> Function(XFile file)? onSubmit,
+}) {
+  XFile? pickedFile;
+  bool isSubmitting = false;
   final ImagePicker picker = ImagePicker();
 
   showDialog(
     context: context,
+    barrierDismissible: !isSubmitting,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
           return Dialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Upload transaction payment screenshot",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  const Text(
+                    "Upload Payment Screenshot",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff1f2937),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "Please upload a screenshot of your bank or Telebirr transfer receipt.",
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 16),
 
-                  // File picker
+                  // File picker container
                   GestureDetector(
-                    onTap: () async {
-                      // Request permission depending on platform
-                      PermissionStatus status;
-                      if (Platform.isAndroid) {
-                        status =
-                            await Permission.photos
-                                .request(); // maps to READ_MEDIA_IMAGES on Android 13+
-                      } else {
-                        status = await Permission.photos.request(); // iOS
-                      }
+                    onTap: isSubmitting
+                        ? null
+                        : () async {
+                            try {
+                              if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+                                PermissionStatus status = await Permission.photos.request();
+                                if (!status.isGranted && Platform.isAndroid) {
+                                  status = await Permission.storage.request();
+                                }
+                              }
 
-                      if (status.isGranted) {
-                        final XFile? image = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
+                              final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery,
+                                imageQuality: 85,
+                              );
 
-                        if (image != null) {
-                          setState(() {
-                            selectedFile = image.name;
-                          });
-                        }
-                      } else if (status.isDenied) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Permission denied. Cannot access gallery.",
-                            ),
-                          ),
-                        );
-                      } else if (status.isPermanentlyDenied) {
-                        openAppSettings();
-                      }
-                    },
+                              if (image != null) {
+                                setState(() {
+                                  pickedFile = image;
+                                });
+                              }
+                            } catch (_) {
+                              final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery,
+                              );
+                              if (image != null) {
+                                setState(() {
+                                  pickedFile = image;
+                                });
+                              }
+                            }
+                          },
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 14,
+                        horizontal: 16,
+                        vertical: 16,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.orange),
-                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: pickedFile != null
+                              ? const Color(0xfff59e0b)
+                              : Colors.grey.shade400,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xfffffbeb),
                       ),
-                      child: Text(
-                        selectedFile ?? "Choose File (No file chosen)",
-                        style: const TextStyle(color: Colors.orange),
+                      child: Row(
+                        children: [
+                          Icon(
+                            pickedFile != null
+                                ? Icons.check_circle
+                                : Icons.upload_file,
+                            color: const Color(0xfff59e0b),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              pickedFile != null
+                                  ? pickedFile!.name
+                                  : "Tap to select screenshot from gallery",
+                              style: TextStyle(
+                                color: pickedFile != null
+                                    ? Colors.black87
+                                    : Colors.black54,
+                                fontWeight: pickedFile != null
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
 
-                  // Buttons Row
+                  // Actions
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
+                            backgroundColor: const Color(0xfff59e0b),
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            elevation: 0,
                           ),
-                          onPressed: () {
-                            if (selectedFile != null) {
-                              // TODO: Upload file to server
-                              Navigator.pop(context);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: Colors.redAccent,
-                                  content: Text(
-                                    "Please select a file first",
-                                    style: TextStyle(color: Colors.white),
+                          onPressed: isSubmitting
+                              ? null
+                              : () async {
+                                  if (pickedFile == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        backgroundColor: Colors.redAccent,
+                                        content: Text(
+                                          "Please select a payment screenshot first.",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  if (onSubmit != null) {
+                                    setState(() => isSubmitting = true);
+                                    try {
+                                      await onSubmit(pickedFile!);
+                                      if (context.mounted) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    } catch (e) {
+                                      setState(() => isSubmitting = false);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            backgroundColor: Colors.redAccent,
+                                            content: Text("Submission failed: $e"),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  } else {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                          child: isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
                                   ),
+                                )
+                              : const Text(
+                                  "Confirm & Submit",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                              );
-                            }
-                          },
-                          child: const Text("Submit"),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.shade300,
-                            foregroundColor: Colors.black,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Cancel"),
+                          onPressed: isSubmitting
+                              ? null
+                              : () => Navigator.of(context).pop(),
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.grey),
+                          ),
                         ),
                       ),
                     ],

@@ -4,6 +4,7 @@ import 'package:minoo_deleivery/pages/CartPage.dart';
 import 'package:minoo_deleivery/pages/favoriteItems.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/mainHomeComponents.dart';
+import 'package:minoo_deleivery/pages/order_history.dart';
 import 'package:minoo_deleivery/pages/wallet.dart';
 
 class Home extends StatefulWidget {
@@ -23,7 +24,7 @@ class _HomeState extends State<Home> {
     pages = [
       const HomeContent(),
       const Favoriteitems(),
-      const Wallet(),
+      const OrderHistoryPage(),
       const Cartpage(),
       const Login(),
     ];
@@ -38,8 +39,9 @@ class _HomeState extends State<Home> {
         items: const [
           Icon(Icons.home, size: 24, color: Colors.white),
           Icon(Icons.favorite, size: 24, color: Colors.white),
-          Icon(Icons.wallet, size: 24, color: Colors.white),
+          Icon(Icons.receipt_long, size: 24, color: Colors.white),
           Icon(Icons.shopping_cart, size: 24, color: Colors.white),
+          Icon(Icons.person, size: 24, color: Colors.white),
         ],
         height: MediaQuery.of(context).size.height * 0.065,
         backgroundColor: Colors.white,

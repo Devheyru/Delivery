@@ -50,6 +50,7 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                                 description: item.menuDescription,
                                 price: item.menuPrice,
                                 id: item.id.toString(),
+                                vendorId: item.vendorId,
                               ),
                         ),
                       ),

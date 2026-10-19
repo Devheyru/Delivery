@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:minoo_deleivery/pages/express_checkout.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 import 'package:minoo_deleivery/config/api_config.dart';
@@ -9,6 +10,7 @@ import 'package:minoo_deleivery/utils/menu_item.dart';
 class DetailsPage extends ConsumerStatefulWidget {
   final String imageUrl, id, title, description, subTitle;
   final double price;
+  final String? vendorId;
 
   const DetailsPage({
     super.key,
@@ -18,6 +20,7 @@ class DetailsPage extends ConsumerStatefulWidget {
     required this.description,
     required this.price,
     required this.id,
+    this.vendorId,
   });
 
   @override
@@ -198,60 +201,119 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             ),
             const SizedBox(height: 20),
 
-            Center(
-              child: Material(
-                borderRadius: BorderRadius.circular(15),
-                elevation: 3,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () {
-                    final food = MenuItem(
-                      id: int.parse(widget.id),
-                      vendorId: '',
-                      publicId: '',
-                      menuName: widget.title,
-                      menuDescription: widget.description,
-                      menuPrice: widget.price,
-                      menuImg: widget.imageUrl.replaceFirst(
-                        '${ApiConfig.baseUrl}/',
-                        '',
-                      ),
-                      menuCategory: widget.subTitle,
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
-                    );
+            Row(
+              children: [
+                Expanded(
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    elevation: 2,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        final food = MenuItem(
+                          id: int.tryParse(widget.id) ?? 0,
+                          vendorId: widget.vendorId ?? '',
+                          publicId: '',
+                          menuName: widget.title,
+                          menuDescription: widget.description,
+                          menuPrice: widget.price,
+                          menuImg: widget.imageUrl.replaceFirst(
+                            '${ApiConfig.baseUrl}/',
+                            '',
+                          ),
+                          menuCategory: widget.subTitle,
+                          createdAt: DateTime.now(),
+                          updatedAt: DateTime.now(),
+                        );
 
-                    ref.read(cartProvider.notifier).addItem(food, quantity);
+                        ref.read(cartProvider.notifier).addItem(food, quantity);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.green,
-
-                        content: Center(
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Center(
+                              child: Text(
+                                ' $quantity ${widget.title} added to cart',
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 54,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: primaryColor, width: 1.5),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Center(
                           child: Text(
-                            ' $quantity ${widget.title} added to cart',
+                            "Add to Cart",
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width / 2,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Add to Cart",
-                        style: TextStyle(color: Colors.white, fontSize: 26),
                       ),
                     ),
                   ),
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    elevation: 3,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        final food = MenuItem(
+                          id: int.tryParse(widget.id) ?? 0,
+                          vendorId: widget.vendorId ?? '',
+                          publicId: '',
+                          menuName: widget.title,
+                          menuDescription: widget.description,
+                          menuPrice: widget.price,
+                          menuImg: widget.imageUrl.replaceFirst(
+                            '${ApiConfig.baseUrl}/',
+                            '',
+                          ),
+                          menuCategory: widget.subTitle,
+                          createdAt: DateTime.now(),
+                          updatedAt: DateTime.now(),
+                        );
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ExpressCheckoutPage(
+                              menuItem: food,
+                              quantity: quantity,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 54,
+                        decoration: BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "Order Now",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

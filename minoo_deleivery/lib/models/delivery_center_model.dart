@@ -7,9 +7,9 @@ class DeliveryCenter {
 
   factory DeliveryCenter.fromJson(Map<String, dynamic> json) {
     return DeliveryCenter(
-      id: json['id'],
-      name: json['name'],
-      slug: json['slug'],
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      name: json['name']?.toString() ?? '',
+      slug: json['slug']?.toString() ?? '',
     );
   }
 }

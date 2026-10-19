@@ -6,6 +6,7 @@ import 'package:minoo_deleivery/pages/CartPage.dart';
 import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/onboarding.dart';
+import 'package:minoo_deleivery/pages/order_history.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/pages/wallet.dart';
 
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Onboarding(),
         '/home': (context) => const Home(),
         '/cart': (context) => const Cartpage(),
+        '/orders': (context) => const OrderHistoryPage(),
         '/logIn': (context) => const Login(),
         '/signUp': (context) => const Signup(),
         '/wallet': (context) => const Wallet(),

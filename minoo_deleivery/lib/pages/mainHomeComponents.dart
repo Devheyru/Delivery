@@ -46,17 +46,27 @@ class _HomeContentState extends State<HomeContent> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/signUp'),
-                        child: Image.asset(
-                          "assets/images/abushe.jpg",
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.receipt_long, color: Color(0xfff59e0b), size: 30),
+                          tooltip: 'My Orders',
+                          onPressed: () => Navigator.pushNamed(context, '/orders'),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, '/signUp'),
+                            child: Image.asset(
+                              "assets/images/abushe.jpg",
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

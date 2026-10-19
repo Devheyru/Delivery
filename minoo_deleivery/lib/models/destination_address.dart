@@ -15,11 +15,12 @@ class Destination {
 
   factory Destination.fromJson(Map<String, dynamic> json) {
     return Destination(
-      id: json['id'],
-      deliveryCenterId: int.parse(json['delivery_center_id'].toString()),
-      name: json['name'],
-      slug: json['slug'],
-      distance: json['distance'].toString(),
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      deliveryCenterId:
+          int.tryParse(json['delivery_center_id']?.toString() ?? '') ?? 0,
+      name: json['name']?.toString() ?? '',
+      slug: json['slug']?.toString() ?? '',
+      distance: json['distance']?.toString() ?? '0.0',
     );
   }
 }
