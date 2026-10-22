@@ -59,6 +59,14 @@ class AppWidget {
     );
   }
 
+  static TextStyle boldTextFieldStyle() {
+    return const TextStyle(
+      color: Colors.black,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
   static TextStyle whiteBoldTextFieldStyle() {
     return const TextStyle(
       color: Color(0xffffffff),

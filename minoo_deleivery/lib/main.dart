@@ -25,12 +25,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Minoo Deleivery',
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      title: 'Minoo Delivery',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xfff53e0b)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xfff53e0b)),
         useMaterial3: true,
-        primaryColor: Color(0xfff53e0b),
+        primaryColor: const Color(0xfff53e0b),
       ),
       initialRoute: '/',
       routes: {
