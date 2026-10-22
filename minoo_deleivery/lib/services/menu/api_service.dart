@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:minoo_deleivery/config/api_config.dart';
 
@@ -23,21 +23,12 @@ class ApiService {
         if (decoded is Map && decoded['data'] is List) return decoded['data'];
         throw Exception('Unexpected JSON format');
       } else {
-        throw Exception('Failed to load menus');
+        throw Exception('Failed to load menus (${response.statusCode})');
       }
-    } on SocketException {
+    } catch (e) {
+      debugPrint('[ApiService] Failed to fetch real menus: $e');
       if (_client != null) {
-        throw Exception('Network error: Please check your internet connection and try again.');
-      }
-      return _demoMenus();
-    } on http.ClientException {
-      if (_client != null) {
-        throw Exception('Network error: Please check your internet connection and try again.');
-      }
-      return _demoMenus();
-    } on TimeoutException {
-      if (_client != null) {
-        throw Exception('Network error: Connection timed out. Please check your internet connection.');
+        throw Exception('Network error: $e');
       }
       return _demoMenus();
     }

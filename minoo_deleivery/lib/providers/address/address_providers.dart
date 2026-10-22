@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:minoo_deleivery/config/api_config.dart';
@@ -38,13 +38,10 @@ final deliveryCentersProvider = FutureProvider<List<DeliveryCenter>>((
       final List data = jsonDecode(response.body);
       return data.map((e) => DeliveryCenter.fromJson(e)).toList();
     } else {
-      throw Exception("Failed to fetch delivery centers");
+      throw Exception("Failed to fetch delivery centers: ${response.statusCode}");
     }
-  } on SocketException {
-    return _demoDeliveryCenters();
-  } on http.ClientException {
-    return _demoDeliveryCenters();
-  } catch (_) {
+  } catch (e) {
+    debugPrint("[address_providers] Failed to fetch delivery centers: $e");
     return _demoDeliveryCenters();
   }
 });
@@ -66,13 +63,10 @@ final destinationsProvider = FutureProvider.family<List<Destination>, int>((
       final List data = jsonDecode(response.body);
       return data.map((e) => Destination.fromJson(e)).toList();
     } else {
-      throw Exception("Failed to fetch destinations");
+      throw Exception("Failed to fetch destinations: ${response.statusCode}");
     }
-  } on SocketException {
-    return _demoDestinations(centerId);
-  } on http.ClientException {
-    return _demoDestinations(centerId);
-  } catch (_) {
+  } catch (e) {
+    debugPrint("[address_providers] Failed to fetch destinations for center $centerId: $e");
     return _demoDestinations(centerId);
   }
 });

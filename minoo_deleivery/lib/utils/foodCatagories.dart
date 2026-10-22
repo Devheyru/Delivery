@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
 class Productfilter extends StatelessWidget {
-  final List<String> catagories = const [
-    'All',
-    "Bakeries",
-    "Fruits",
-    "Vigetables",
-    "Logies",
-    "Hotels",
-    "Resorts",
-    "Resturants",
-    "Beverages",
-  ];
-
+  final List<String> catagories;
   final String selectedCategory;
   final Function(String) onCategoryChanged;
 
   const Productfilter({
     super.key,
+    this.catagories = const [
+      'All',
+      'Burger',
+      'Pizza',
+      'Meat',
+      'Chicken',
+      'Fish',
+      'Special',
+      'Cake',
+      'Sandwich',
+    ],
     required this.selectedCategory,
     required this.onCategoryChanged,
   });

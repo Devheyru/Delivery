@@ -1,18 +1,25 @@
+import 'package:flutter/foundation.dart';
+
 /// Centralized API configuration.
-/// Change [baseUrl] here once your backend is deployed — every file reads from this single source.
+/// On Web in debug/local development, requests route through the local CORS proxy (port 5050).
+/// On mobile devices (Android / iOS) or production, requests go directly to the live backend.
 class ApiConfig {
   ApiConfig._();
 
-  /// ──────────────────────────────────────────────
-  /// 🔧  Live backend host
-  /// ──────────────────────────────────────────────
-  static const String baseUrl = 'https://minoodelivery.havanacademy.com';
+  static const String liveBaseUrl = 'https://minoodelivery.havanacademy.com';
+
+  static String get baseUrl {
+    if (kIsWeb) {
+      return 'http://127.0.0.1:5050';
+    }
+    return liveBaseUrl;
+  }
 
   // Derived endpoints
-  static const String menusUrl = '$baseUrl/menus';
-  static const String menuItemsUrl = '$baseUrl/menu-items';
-  static const String deliveryZonesUrl = '$baseUrl/delivery-zones';
-  static const String ordersUrl = '$baseUrl/orders';
+  static String get menusUrl => '$baseUrl/menus';
+  static String get menuItemsUrl => '$baseUrl/menu-items';
+  static String get deliveryZonesUrl => '$baseUrl/delivery-zones';
+  static String get ordersUrl => '$baseUrl/orders';
 
   static String destinationsUrl(int centerId) =>
       '$deliveryZonesUrl/destinations/$centerId';
@@ -27,3 +34,4 @@ class ApiConfig {
     return '$baseUrl/$path';
   }
 }
+

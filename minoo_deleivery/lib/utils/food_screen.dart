@@ -26,40 +26,47 @@ class _FoodScreenState extends ConsumerState<FoodScreen> {
   Widget build(BuildContext context) {
     final menusAsync = ref.watch(menuListProvider);
 
-    return Column(
-      children: [
-        Productfilter(
-          selectedCategory: selectedCategory,
-          onCategoryChanged: updateCategory,
-        ),
-        Expanded(
-          child: menusAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, _) => Center(child: Text('Error: $err')),
-            data: (menus) {
-              final filteredList =
-                  menus.where((item) {
-                    final matchesCategory =
-                        selectedCategory == 'All' ||
-                        (item.menuCategory != null &&
-                            item.menuCategory!.toLowerCase() ==
-                                selectedCategory.toLowerCase());
-                    final matchesSearch =
-                        widget.searchQuery.isEmpty ||
-                        item.menuName.toLowerCase().contains(
-                          widget.searchQuery.toLowerCase(),
-                        ) ||
-                        item.menuDescription.toLowerCase().contains(
-                          widget.searchQuery.toLowerCase(),
-                        );
-                    return matchesCategory && matchesSearch;
-                  }).toList();
+    return menusAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text('Error: $err')),
+      data: (menus) {
+        final categorySet = <String>{};
+        for (final item in menus) {
+          final cat = item.menuCategory?.trim();
+          if (cat != null && cat.isNotEmpty) {
+            categorySet.add(cat);
+          }
+        }
+        final categories = ['All', ...categorySet];
 
-              return Recomendedfoods(filteredItems: filteredList);
-            },
-          ),
-        ),
-      ],
+        final filteredList = menus.where((item) {
+          final matchesCategory = selectedCategory == 'All' ||
+              (item.menuCategory != null &&
+                  item.menuCategory!.toLowerCase() ==
+                      selectedCategory.toLowerCase());
+          final matchesSearch = widget.searchQuery.isEmpty ||
+              item.menuName.toLowerCase().contains(
+                    widget.searchQuery.toLowerCase(),
+                  ) ||
+              item.menuDescription.toLowerCase().contains(
+                    widget.searchQuery.toLowerCase(),
+                  );
+          return matchesCategory && matchesSearch;
+        }).toList();
+
+        return Column(
+          children: [
+            Productfilter(
+              catagories: categories,
+              selectedCategory: selectedCategory,
+              onCategoryChanged: updateCategory,
+            ),
+            Expanded(
+              child: Recomendedfoods(filteredItems: filteredList),
+            ),
+          ],
+        );
+      },
     );
   }
 }
