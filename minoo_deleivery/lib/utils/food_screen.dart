@@ -55,15 +55,14 @@ class _FoodScreenState extends ConsumerState<FoodScreen> {
         }).toList();
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Productfilter(
               catagories: categories,
               selectedCategory: selectedCategory,
               onCategoryChanged: updateCategory,
             ),
-            Expanded(
-              child: Recomendedfoods(filteredItems: filteredList),
-            ),
+            Recomendedfoods(filteredItems: filteredList),
           ],
         );
       },

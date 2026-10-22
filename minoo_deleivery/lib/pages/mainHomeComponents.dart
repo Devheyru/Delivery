@@ -115,11 +115,8 @@ class _HomeContentState extends State<HomeContent> {
             ),
 
             Container(
-              padding: EdgeInsets.only(left: 16),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: FoodScreen(searchQuery: _searchQuery),
-              ),
+              padding: const EdgeInsets.only(left: 16),
+              child: FoodScreen(searchQuery: _searchQuery),
             ),
           ],
         ),
