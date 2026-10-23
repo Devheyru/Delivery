@@ -1,8 +1,11 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minoo_deleivery/config/firebase_options.dart';
 import 'package:minoo_deleivery/pages/CartPage.dart';
+import 'package:minoo_deleivery/pages/forgot_password.dart';
 import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/onboarding.dart';
@@ -10,7 +13,18 @@ import 'package:minoo_deleivery/pages/order_history.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/pages/wallet.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+  } catch (e) {
+    debugPrint('Firebase initialization notice: $e');
+  }
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
@@ -40,9 +54,13 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const Home(),
         '/cart': (context) => const Cartpage(),
         '/orders': (context) => const OrderHistoryPage(),
+        '/login': (context) => const Login(),
         '/logIn': (context) => const Login(),
+        '/signup': (context) => const Signup(),
         '/signUp': (context) => const Signup(),
         '/wallet': (context) => const Wallet(),
+        '/forgotPassword': (context) => const ForgotPassword(),
+        '/forgot-password': (context) => const ForgotPassword(),
       },
     );
   }

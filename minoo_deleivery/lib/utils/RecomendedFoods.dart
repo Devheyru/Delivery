@@ -109,7 +109,7 @@ class _RecomendedfoodsState extends State<Recomendedfoods> {
                 color: Colors.white,
               ),
               label: Text(
-                "Show more",
+                "Show more ($remainingCount)",
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

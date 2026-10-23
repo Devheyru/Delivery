@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "895233325265",
+    "project_id": "minoo-6858f",
+    "storage_bucket": "minoo-6858f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895233325265:android:de2596de01fccd444c6df0",
+        "android_client_info": {
+          "package_name": "com.example.minoo_deleivery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv1fZDxa5O9K45nCouB9Ln_A5sx_CElRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

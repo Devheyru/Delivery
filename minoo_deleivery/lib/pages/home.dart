@@ -5,7 +5,6 @@ import 'package:minoo_deleivery/pages/favoriteItems.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/mainHomeComponents.dart';
 import 'package:minoo_deleivery/pages/order_history.dart';
-import 'package:minoo_deleivery/pages/wallet.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -43,7 +42,7 @@ class _HomeState extends State<Home> {
           Icon(Icons.shopping_cart, size: 24, color: Colors.white),
           Icon(Icons.person, size: 24, color: Colors.white),
         ],
-        height: MediaQuery.of(context).size.height * 0.065,
+        height: (MediaQuery.of(context).size.height * 0.065).clamp(50.0, 75.0),
         backgroundColor: Colors.white,
         color: const Color(0xFFf59e0b),
         animationDuration: const Duration(milliseconds: 300),
