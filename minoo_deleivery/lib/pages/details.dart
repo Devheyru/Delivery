@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:minoo_deleivery/pages/express_checkout.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 import 'package:minoo_deleivery/config/api_config.dart';
 import 'package:minoo_deleivery/utils/menu_item.dart';
@@ -266,7 +267,14 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
                     elevation: 3,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
-                      onTap: () {
+                      onTap: () async {
+                        final isAuth = await AuthService.requireAuth(
+                          context,
+                          action: 'order this food item',
+                        );
+                        if (!isAuth) return;
+                        if (!context.mounted) return;
+
                         final food = MenuItem(
                           id: int.tryParse(widget.id) ?? 0,
                           vendorId: widget.vendorId ?? '',

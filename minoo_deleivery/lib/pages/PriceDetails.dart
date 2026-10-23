@@ -5,6 +5,7 @@ import 'package:minoo_deleivery/pages/payment_Proof.dart';
 import 'package:minoo_deleivery/providers/address/address_providers.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
 import 'package:minoo_deleivery/providers/order/order_provider.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 
 class CheckoutSummaryPage extends ConsumerWidget {
   const CheckoutSummaryPage({super.key});
@@ -174,7 +175,14 @@ class CheckoutSummaryPage extends ConsumerWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final isAuth = await AuthService.requireAuth(
+                        context,
+                        action: 'complete checkout',
+                      );
+                      if (!isAuth) return;
+                      if (!context.mounted) return;
+
                       showPaymentDialog(
                         context,
                         onSubmit: (file) async {

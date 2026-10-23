@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:minoo_deleivery/models/order_model.dart';
 import 'package:minoo_deleivery/pages/order_detail.dart';
 import 'package:minoo_deleivery/providers/order/order_history_provider.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 
 /// Screen displaying customer's active and completed order history.
 class OrderHistoryPage extends ConsumerWidget {
@@ -11,6 +12,57 @@ class OrderHistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (AuthService.currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "My Orders",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color(0xfff59e0b),
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.lock_outline_rounded, size: 80, color: Colors.grey.shade400),
+                const SizedBox(height: 16),
+                const Text(
+                  "Sign In Required",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Please sign in or create an account to view and track your orders.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xfff59e0b),
+                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: const Text(
+                    "Log In / Sign Up",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final historyAsync = ref.watch(orderHistoryProvider);
 
     return Scaffold(
@@ -26,7 +78,7 @@ class OrderHistoryPage extends ConsumerWidget {
       body: RefreshIndicator(
         color: const Color(0xfff59e0b),
         onRefresh: () async {
-          ref.refresh(orderHistoryProvider);
+          ref.invalidate(orderHistoryProvider);
         },
         child: historyAsync.when(
           data: (orders) {

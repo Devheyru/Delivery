@@ -6,6 +6,7 @@ import 'package:minoo_deleivery/models/destination_address.dart';
 import 'package:minoo_deleivery/pages/payment_Proof.dart';
 import 'package:minoo_deleivery/providers/address/address_providers.dart';
 import 'package:minoo_deleivery/providers/order/order_provider.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 import 'package:minoo_deleivery/utils/menu_item.dart';
 
@@ -252,7 +253,14 @@ class _ExpressCheckoutPageState extends ConsumerState<ExpressCheckoutPage> {
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    final isAuth = await AuthService.requireAuth(
+                                      context,
+                                      action: 'submit this express order',
+                                    );
+                                    if (!isAuth) return;
+                                    if (!context.mounted) return;
+
                                     showPaymentDialog(
                                       context,
                                       onSubmit: (file) async {

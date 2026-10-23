@@ -5,6 +5,7 @@ import 'package:minoo_deleivery/pages/addressPage.dart';
 import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/providers/address/address_providers.dart';
 import 'package:minoo_deleivery/providers/menu/cart_provider.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class Cartpage extends ConsumerStatefulWidget {
@@ -383,7 +384,7 @@ class _CartpageState extends ConsumerState<Cartpage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (cartItems.isEmpty) {
                             showDialog(
                               context: context,
@@ -404,7 +405,17 @@ class _CartpageState extends ConsumerState<Cartpage> {
                                 );
                               },
                             );
-                          } else if (selectedDestination == null &&
+                            return;
+                          }
+
+                          final isAuth = await AuthService.requireAuth(
+                            context,
+                            action: 'place your order',
+                          );
+                          if (!isAuth) return;
+                          if (!context.mounted) return;
+
+                          if (selectedDestination == null &&
                               selectedAddress == null) {
                             showDialog(
                               context: context,
