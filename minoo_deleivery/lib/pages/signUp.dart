@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/login.dart';
+import 'package:minoo_deleivery/pages/profile.dart';
 import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
 
@@ -91,11 +93,17 @@ class _SignupState extends State<Signup> {
             content: Text('Welcome, $name! Account created successfully.'),
           ),
         );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const Home()),
-          (route) => false,
-        );
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context, true);
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const Home(initialIndex: 4),
+            ),
+            (route) => false,
+          );
+        }
       }
     } catch (e) {
       setState(() {
@@ -107,6 +115,18 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: AuthService.authStateChanges,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return const ProfilePage();
+        }
+        return _buildSignupScaffold(context);
+      },
+    );
+  }
+
+  Widget _buildSignupScaffold(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 

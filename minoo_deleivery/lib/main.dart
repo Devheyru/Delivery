@@ -10,6 +10,7 @@ import 'package:minoo_deleivery/pages/home.dart';
 import 'package:minoo_deleivery/pages/login.dart';
 import 'package:minoo_deleivery/pages/onboarding.dart';
 import 'package:minoo_deleivery/pages/order_history.dart';
+import 'package:minoo_deleivery/pages/profile.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/pages/wallet.dart';
 
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const Signup(),
         '/signUp': (context) => const Signup(),
         '/wallet': (context) => const Wallet(),
+        '/profile': (context) => const ProfilePage(),
         '/forgotPassword': (context) => const ForgotPassword(),
         '/forgot-password': (context) => const ForgotPassword(),
       },

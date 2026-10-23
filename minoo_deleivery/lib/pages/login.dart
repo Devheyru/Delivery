@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:minoo_deleivery/pages/forgot_password.dart';
 import 'package:minoo_deleivery/pages/home.dart';
+import 'package:minoo_deleivery/pages/profile.dart';
 import 'package:minoo_deleivery/pages/signUp.dart';
 import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:minoo_deleivery/services/widgit_support.dart';
@@ -50,11 +52,15 @@ class _LoginState extends State<Login> {
       await AuthService.logIn(email: email, password: password);
 
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const Home()),
-          (route) => false,
-        );
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context, true);
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const Home(initialIndex: 4)),
+            (route) => false,
+          );
+        }
       }
     } catch (e) {
       setState(() {
@@ -66,6 +72,18 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: AuthService.authStateChanges,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return const ProfilePage();
+        }
+        return _buildLoginScaffold(context);
+      },
+    );
+  }
+
+  Widget _buildLoginScaffold(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -135,7 +153,10 @@ class _LoginState extends State<Login> {
               borderRadius: BorderRadius.circular(20.0),
               elevation: 4.0,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 width: screenWidth,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -169,9 +190,18 @@ class _LoginState extends State<Login> {
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter email",
-                            hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                            prefixIcon: Icon(Icons.mail_outline, color: Color(0xfff59e0b)),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.mail_outline,
+                              color: Color(0xfff59e0b),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -191,8 +221,14 @@ class _LoginState extends State<Login> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter password",
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                            prefixIcon: const Icon(Icons.lock_outline, color: Color(0xfff59e0b)),
+                            hintStyle: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline,
+                              color: Color(0xfff59e0b),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscurePassword
@@ -200,10 +236,15 @@ class _LoginState extends State<Login> {
                                     : Icons.visibility,
                                 color: Colors.grey,
                               ),
-                              onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword),
+                              onPressed:
+                                  () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -248,8 +289,11 @@ class _LoginState extends State<Login> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.error_outline,
-                                  color: Colors.red, size: 20),
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 20,
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -276,30 +320,33 @@ class _LoginState extends State<Login> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xfff59e0b),
                             elevation: 3,
-                            shadowColor: const Color(0xfff59e0b).withValues(alpha: 0.4),
+                            shadowColor: const Color(
+                              0xfff59e0b,
+                            ).withValues(alpha: 0.4),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           onPressed: _isLoading ? null : _handleLogin,
-                          child: _isLoading
-                              ? const SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2.5,
+                          child:
+                              _isLoading
+                                  ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                  : const Text(
+                                    "Log In",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                                   ),
-                                )
-                              : const Text(
-                                  "Log In",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    letterSpacing: 0.3,
-                                  ),
-                                ),
                         ),
                       ),
                       const SizedBox(height: 16.0),

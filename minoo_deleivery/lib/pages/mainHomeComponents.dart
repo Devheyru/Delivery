@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:minoo_deleivery/services/auth/auth_service.dart';
 import 'package:minoo_deleivery/utils/food_screen.dart';
 
 class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
+  final VoidCallback? onProfileTap;
+
+  const HomeContent({super.key, this.onProfileTap});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -54,17 +59,103 @@ class _HomeContentState extends State<HomeContent> {
                           onPressed: () => Navigator.pushNamed(context, '/orders'),
                         ),
                         const SizedBox(width: 8),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: GestureDetector(
-                            onTap: () => Navigator.pushNamed(context, '/signUp'),
-                            child: Image.asset(
-                              "assets/images/abushe.jpg",
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+
+                        // Real User Avatar
+                        StreamBuilder<User?>(
+                          stream: AuthService.authStateChanges,
+                          builder: (context, authSnapshot) {
+                            final user = authSnapshot.data;
+                            if (user != null) {
+                              return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                                stream: AuthService.userStream(user.uid),
+                                builder: (context, userSnapshot) {
+                                  final userData = userSnapshot.data?.data();
+                                  final name = userData?['name'] ?? user.displayName ?? 'Customer';
+                                  final initial = name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : 'U';
+                                  final String? photoUrl = userData?['photoUrl'] ?? user.photoURL;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (widget.onProfileTap != null) {
+                                        widget.onProfileTap!();
+                                      } else {
+                                        Navigator.pushNamed(context, '/profile');
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [Color(0xfff59e0b), Color(0xffd97706)],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xfff59e0b).withValues(alpha: 0.35),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: (photoUrl != null && photoUrl.trim().isNotEmpty)
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                photoUrl,
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (_, __, ___) => Text(
+                                                  initial,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 22,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              initial,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 22,
+                                              ),
+                                            ),
+                                    ),
+                                  );
+                                },
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  if (widget.onProfileTap != null) {
+                                    widget.onProfileTap!();
+                                  } else {
+                                    Navigator.pushNamed(context, '/login');
+                                  }
+                                },
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFececf8),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: const Color(0xfff59e0b), width: 1.8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.person_outline_rounded,
+                                    color: Color(0xfff59e0b),
+                                    size: 26,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ],
                     ),

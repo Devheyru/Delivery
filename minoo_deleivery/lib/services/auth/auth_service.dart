@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -9,6 +9,111 @@ class AuthService {
 
   static User? get currentUser => _auth.currentUser;
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
+  static bool get isAuthenticated => _auth.currentUser != null;
+
+  /// Stream of user document from Firestore
+  static Stream<DocumentSnapshot<Map<String, dynamic>>>? userStream(String uid) {
+    try {
+      return _firestore.collection('users').doc(uid).snapshots();
+    } catch (e) {
+      debugPrint('Error getting user stream: $e');
+      return null;
+    }
+  }
+
+  /// Get user document from Firestore
+  static Future<Map<String, dynamic>?> getUserData(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      return doc.data();
+    } catch (e) {
+      debugPrint('Error getting user data: $e');
+      return null;
+    }
+  }
+
+  /// Update user profile data in Firestore and Firebase Auth
+  static Future<void> updateProfileData({
+    required String uid,
+    required String name,
+    required String phone,
+  }) async {
+    final phoneError = validateEthiopianPhone(phone);
+    if (phoneError != null) {
+      throw phoneError;
+    }
+    if (name.trim().isEmpty) {
+      throw 'Name cannot be empty';
+    }
+
+    // Update display name in Firebase Auth
+    final user = _auth.currentUser;
+    if (user != null && user.displayName != name.trim()) {
+      await user.updateDisplayName(name.trim());
+    }
+
+    // Update Firestore user document
+    await _firestore.collection('users').doc(uid).set({
+      'name': name.trim(),
+      'phone': phone.trim(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  /// Helper to require authentication before performing sensitive actions like ordering
+  static Future<bool> requireAuth(
+    BuildContext context, {
+    String action = 'place an order',
+  }) async {
+    if (isAuthenticated) {
+      return true;
+    }
+
+    final shouldNavigate = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: const Row(
+          children: [
+            Icon(Icons.lock_person_outlined, color: Color(0xfff59e0b), size: 28),
+            SizedBox(width: 10),
+            Text(
+              "Sign In Required",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+          ],
+        ),
+        content: Text(
+          "You must be signed in to $action.\n\nPlease log in or create a new account to proceed.",
+          style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.4),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xfff59e0b),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            ),
+            onPressed: () {
+              Navigator.pop(context, true);
+              Navigator.pushNamed(context, '/login');
+            },
+            child: const Text(
+              "Log In / Sign Up",
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return shouldNavigate ?? false;
+  }
 
   /// Validates Ethiopian phone number format:
   /// Exactly 10 digits starting with only '09' or '07'.
